@@ -12,6 +12,8 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.FirebaseApp;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+
 import android.view.View;
 import android.widget.EditText;
 import android.widget.Toast;
@@ -27,6 +29,13 @@ public class MainActivity extends AppCompatActivity {
         mAuth = FirebaseAuth.getInstance();
         email = findViewById(R.id.email);
         password = findViewById(R.id.password);
+
+        FirebaseUser user = mAuth.getCurrentUser();
+
+        if (user != null) {
+            Intent intent = new Intent(getApplicationContext(),feedActivity.class);
+            startActivity(intent);
+        }
     }
 
     public void signIn(View view) {

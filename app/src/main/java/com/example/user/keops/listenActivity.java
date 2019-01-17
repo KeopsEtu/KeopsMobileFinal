@@ -20,10 +20,21 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.widget.EditText;
 
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+
+
 import java.util.ArrayList;
 import java.util.Locale;
+import java.util.UUID;
 
 public class listenActivity extends AppCompatActivity {
+
+    FirebaseDatabase database;
+    DatabaseReference myRef;
+    private FirebaseAuth mAuth;
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -45,6 +56,10 @@ public class listenActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_listen);
+
+        database = FirebaseDatabase.getInstance();
+        myRef = database.getReference();
+        mAuth = FirebaseAuth.getInstance();
 
         checkPermission();
 
@@ -98,8 +113,14 @@ public class listenActivity extends AppCompatActivity {
                         .getStringArrayList(SpeechRecognizer.RESULTS_RECOGNITION);
 
                 //displaying the first match
-                if (matches != null)
+                if (matches != null) {
                     editText.setText(matches.get(0));
+                    FirebaseUser user = mAuth.getCurrentUser();
+                    String mail = user.getEmail();
+                    UUID uuid = UUID.randomUUID();
+                    myRef.child("list" + uuid).child("userEmail").setValue(mail);
+                    myRef.child("list" + uuid).child("item").setValue(matches.get(0));
+                }
             }
 
             @Override

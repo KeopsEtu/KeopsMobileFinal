@@ -28,6 +28,7 @@ import com.google.firebase.database.FirebaseDatabase;
 
 import java.util.ArrayList;
 import java.util.Locale;
+import java.util.UUID;
 
 public class listenActivity extends AppCompatActivity {
 
@@ -116,8 +117,9 @@ public class listenActivity extends AppCompatActivity {
                     editText.setText(matches.get(0));
                     FirebaseUser user = mAuth.getCurrentUser();
                     String mail = user.getEmail();
-                    myRef.child("lists").child("userEmail").setValue(mail);
-                    myRef.child("lists").child("item").setValue(matches.get(0));
+                    UUID uuid = UUID.randomUUID();
+                    myRef.child("list" + uuid).child("userEmail").setValue(mail);
+                    myRef.child("list" + uuid).child("item").setValue(matches.get(0));
                 }
             }
 

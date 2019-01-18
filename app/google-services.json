@@ -1,0 +1,55 @@
+{
+  "project_info": {
+    "project_number": "634728988009",
+    "firebase_url": "https://keops-c57bf.firebaseio.com",
+    "project_id": "keops-c57bf",
+    "storage_bucket": "keops-c57bf.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:634728988009:android:61733e9af401907b",
+        "android_client_info": {
+          "package_name": "com.example.user.keops"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "634728988009-fr0kbd20ula8hl1ng40dn0nsgbdti82d.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.user.keops",
+            "certificate_hash": "12965e6c8401c226d4d2dfb3cd73a24bcfe186be"
+          }
+        },
+        {
+          "client_id": "634728988009-14nlb5nc7aqj9qc9bo434anl2k53tkap.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyC2h1d-6-lU-D1TP2wGi8f_hXjrPaHGapk"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "634728988009-14nlb5nc7aqj9qc9bo434anl2k53tkap.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

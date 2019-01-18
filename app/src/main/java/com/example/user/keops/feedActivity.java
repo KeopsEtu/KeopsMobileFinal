@@ -22,6 +22,10 @@ public class feedActivity extends AppCompatActivity {
             Intent intent =  new Intent(getApplicationContext(), listenActivity.class);
             startActivity(intent);
         }
+        else if(item.getItemId() == R.id.list) {
+            Intent intent =  new Intent(getApplicationContext(), addItemViaKeyboardActivity.class);
+            startActivity(intent);
+        }
         return super.onOptionsItemSelected(item);
     }
 

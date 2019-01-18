@@ -6,4 +6,25 @@
     android:layout_height="match_parent"
     tools:context=".addItemViaKeyboardActivity">
 
+    <Button
+        android:id="@+id/button2"
+        android:layout_width="214dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="85dp"
+        android:layout_marginBottom="415dp"
+        android:onClick="addToDatabase"
+        android:text="Database Add"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <EditText
+        android:id="@+id/sentence"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="18dp"
+        android:ems="10"
+        android:hint="enter a sentence"
+        android:inputType="textPersonName"
+        app:layout_constraintBottom_toTopOf="@+id/button2"
+        app:layout_constraintStart_toStartOf="@+id/button2" />
 </android.support.constraint.ConstraintLayout>

@@ -6,4 +6,6 @@
 
     <color name="colorButton">#3d5f51</color>
     <color name="colorButtonActive">#1bea95</color>
+
+    <color name="colorAddItemToList">#DAF7A6</color>
 </resources>

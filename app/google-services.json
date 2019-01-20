@@ -15,6 +15,14 @@
       },
       "oauth_client": [
         {
+          "client_id": "634728988009-fr0kbd20ula8hl1ng40dn0nsgbdti82d.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.user.keops",
+            "certificate_hash": "12965e6c8401c226d4d2dfb3cd73a24bcfe186be"
+          }
+        },
+        {
           "client_id": "634728988009-14nlb5nc7aqj9qc9bo434anl2k53tkap.apps.googleusercontent.com",
           "client_type": 3
         }
@@ -29,8 +37,13 @@
           "status": 1
         },
         "appinvite_service": {
-          "status": 1,
-          "other_platform_oauth_client": []
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "634728988009-14nlb5nc7aqj9qc9bo434anl2k53tkap.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
         },
         "ads_service": {
           "status": 2

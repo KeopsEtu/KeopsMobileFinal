@@ -49,6 +49,10 @@ public class listenActivity extends AppCompatActivity {
             Intent intent =  new Intent(getApplicationContext(), feedActivity.class);
             startActivity(intent);
         }
+        else if(item.getItemId() == R.id.list) {
+            Intent intent =  new Intent(getApplicationContext(), addItemViaKeyboardActivity.class);
+            startActivity(intent);
+        }
         return super.onOptionsItemSelected(item);
     }
 

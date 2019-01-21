@@ -71,6 +71,7 @@ public class addItemViaKeyboardActivity extends AppCompatActivity {
         String mail = user.getEmail();
         UUID uuid = UUID.randomUUID();
         myRef.child("list" + uuid).child("userEmail").setValue(mail);
+        myRef.child("list" + uuid).child("count").setValue(5);
         myRef.child("list" + uuid).child("item").setValue(sentence.getText().toString());
     }
 }

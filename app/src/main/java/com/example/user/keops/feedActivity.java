@@ -7,7 +7,9 @@ import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.widget.CompoundButton;
 import android.widget.ListView;
+import android.widget.RadioButton;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
@@ -69,6 +71,8 @@ public class feedActivity extends AppCompatActivity {
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 for (DataSnapshot ds : dataSnapshot.getChildren()) {
                     HashMap<String,String> hashMap = (HashMap<String, String>) ds.getValue();
+                    String a = mAuth.getCurrentUser().getEmail();
+                    String b = hashMap.get("userEmail");
                     if(mAuth.getCurrentUser().getEmail().equals(hashMap.get("userEmail"))) {
                         listItemFromFB.add(hashMap.get("item"));
                         adapter.notifyDataSetChanged();

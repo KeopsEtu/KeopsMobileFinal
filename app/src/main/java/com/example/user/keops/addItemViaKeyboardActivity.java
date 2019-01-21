@@ -23,7 +23,7 @@ public class addItemViaKeyboardActivity extends AppCompatActivity {
     FirebaseDatabase database;
     DatabaseReference myRef;
     private FirebaseAuth mAuth;
-    EditText sentence;
+    EditText item,amountOfItem;
     Button addItemButton;
 
     @Override
@@ -54,14 +54,15 @@ public class addItemViaKeyboardActivity extends AppCompatActivity {
         database = FirebaseDatabase.getInstance();
         myRef = database.getReference();
         mAuth = FirebaseAuth.getInstance();
-        sentence = findViewById(R.id.add_item_edit_text);
+        item = findViewById(R.id.add_item_edit_text);
+        amountOfItem = findViewById(R.id.amount_of_item_edit_text);
 
         addItemButton = findViewById(R.id.add_item_button);
         addItemButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 addToDatabase(view);
-                Toast.makeText(getApplicationContext(), sentence.getText().toString() + "  Başarıyla eklendi ...", Toast.LENGTH_LONG).show();
+                Toast.makeText(getApplicationContext(), item.getText().toString() + "  Başarıyla eklendi ...", Toast.LENGTH_LONG).show();
             }
         });
     }
@@ -71,6 +72,7 @@ public class addItemViaKeyboardActivity extends AppCompatActivity {
         String mail = user.getEmail();
         UUID uuid = UUID.randomUUID();
         myRef.child("list" + uuid).child("userEmail").setValue(mail);
-        myRef.child("list" + uuid).child("item").setValue(sentence.getText().toString());
+        myRef.child("list" + uuid).child("count").setValue(amountOfItem.getText().toString());
+        myRef.child("list" + uuid).child("item").setValue(item.getText().toString());
     }
 }

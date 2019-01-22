@@ -62,8 +62,6 @@ public class addItemViaKeyboardActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 addToDatabase(view);
-                Toast.makeText(getApplicationContext(), amountOfItem.getText().toString() +" "+
-                        item.getText().toString() + "  Başarıyla eklendi ...", Toast.LENGTH_LONG).show();
             }
         });
     }
@@ -72,8 +70,17 @@ public class addItemViaKeyboardActivity extends AppCompatActivity {
         FirebaseUser user = mAuth.getCurrentUser();
         String mail = user.getEmail();
         UUID uuid = UUID.randomUUID();
-        myRef.child("list" + uuid).child("userEmail").setValue(mail);
-        myRef.child("list" + uuid).child("item").setValue(item.getText().toString());
-        myRef.child("list" + uuid).child("amountOfItem").setValue(amountOfItem.getText().toString());
+        if (amountOfItem.getText().toString().equals("")) {
+            Toast.makeText(getApplicationContext(), "Lütfen ürün miktarını giriniz ...", Toast.LENGTH_LONG).show();
+        } else if (item.getText().toString().equals("")) {
+            Toast.makeText(getApplicationContext(), "Lütfen ürün ismini giriniz ...", Toast.LENGTH_LONG).show();
+        } else {
+            myRef.child("list" + uuid).child("userEmail").setValue(mail);
+            myRef.child("list" + uuid).child("item").setValue(item.getText().toString());
+            myRef.child("list" + uuid).child("amountOfItem").setValue(amountOfItem.getText().toString());
+
+            Toast.makeText(getApplicationContext(), amountOfItem.getText().toString() + " " +
+                    item.getText().toString() + "  Başarıyla eklendi ...", Toast.LENGTH_LONG).show();
+        }
     }
 }

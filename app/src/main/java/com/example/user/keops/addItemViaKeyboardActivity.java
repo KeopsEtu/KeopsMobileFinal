@@ -62,7 +62,7 @@ public class addItemViaKeyboardActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 addToDatabase(view);
-                Toast.makeText(getApplicationContext(), item.getText().toString() + "  Başarıyla eklendi ...", Toast.LENGTH_LONG).show();
+                Toast.makeText(getApplicationContext(), sentence.getText().toString() + "  Başarıyla eklendi ...", Toast.LENGTH_LONG).show();
             }
         });
     }

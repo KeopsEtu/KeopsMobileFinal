@@ -7,9 +7,9 @@ import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
-import android.widget.CompoundButton;
+import android.view.View;
+import android.widget.Button;
 import android.widget.ListView;
-import android.widget.RadioButton;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
@@ -30,6 +30,7 @@ public class feedActivity extends AppCompatActivity {
     ArrayList<String> listItemFromFB;
     ArrayList<Integer> counts;
     private FirebaseAuth mAuth;
+    Button button;
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -74,7 +75,6 @@ public class feedActivity extends AppCompatActivity {
                 for (DataSnapshot ds : dataSnapshot.getChildren()) {
                     HashMap<String,String> hashMap = (HashMap<String, String>) ds.getValue();
                     if(mAuth.getCurrentUser().getEmail().equals(hashMap.get("userEmail"))) {
-                        System.out.println("pvd" + hashMap);
                         counts.add(Integer.parseInt(String.valueOf(hashMap.get("amountOfItem"))));
                         listItemFromFB.add(hashMap.get("item"));
 
@@ -93,6 +93,17 @@ public class feedActivity extends AppCompatActivity {
                         }
                     }
                 }
+               /* for (int position=0;position<counts.size();position++) {
+                button = findViewById(R.id.analysis);
+                final String temp = listItemFromFB.get(position);
+                button.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        Intent i = new Intent(getApplicationContext(), analysisActivity.class);
+                        i.putExtra("send_string",temp);
+                        startActivity(i);
+                    }
+                });}*/
                 adapter.notifyDataSetChanged();
             }
 

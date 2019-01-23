@@ -23,7 +23,7 @@ public class addItemViaKeyboardActivity extends AppCompatActivity {
     FirebaseDatabase database;
     DatabaseReference myRef;
     private FirebaseAuth mAuth;
-    EditText sentence;
+    EditText item, amountOfItem;
     Button addItemButton;
 
     @Override
@@ -54,14 +54,14 @@ public class addItemViaKeyboardActivity extends AppCompatActivity {
         database = FirebaseDatabase.getInstance();
         myRef = database.getReference();
         mAuth = FirebaseAuth.getInstance();
-        sentence = findViewById(R.id.add_item_edit_text);
+        item = findViewById(R.id.add_item_edit_text);
+        amountOfItem = findViewById(R.id.add_amount_of_item);
 
         addItemButton = findViewById(R.id.add_item_button);
         addItemButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 addToDatabase(view);
-                Toast.makeText(getApplicationContext(), sentence.getText().toString() + "  Başarıyla eklendi ...", Toast.LENGTH_LONG).show();
             }
         });
     }
@@ -70,8 +70,17 @@ public class addItemViaKeyboardActivity extends AppCompatActivity {
         FirebaseUser user = mAuth.getCurrentUser();
         String mail = user.getEmail();
         UUID uuid = UUID.randomUUID();
-        myRef.child("list" + uuid).child("userEmail").setValue(mail);
-        myRef.child("list" + uuid).child("count").setValue(5);
-        myRef.child("list" + uuid).child("item").setValue(sentence.getText().toString());
+        if (amountOfItem.getText().toString().equals("")) {
+            Toast.makeText(getApplicationContext(), "Lütfen ürün miktarını giriniz ...", Toast.LENGTH_LONG).show();
+        } else if (item.getText().toString().equals("")) {
+            Toast.makeText(getApplicationContext(), "Lütfen ürün ismini giriniz ...", Toast.LENGTH_LONG).show();
+        } else {
+            myRef.child("list" + uuid).child("userEmail").setValue(mail);
+            myRef.child("list" + uuid).child("item").setValue(item.getText().toString());
+            myRef.child("list" + uuid).child("amountOfItem").setValue(amountOfItem.getText().toString());
+
+            Toast.makeText(getApplicationContext(), amountOfItem.getText().toString() + " " +
+                    item.getText().toString() + "  Başarıyla eklendi ...", Toast.LENGTH_LONG).show();
+        }
     }
 }

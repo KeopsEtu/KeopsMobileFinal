@@ -3,4 +3,5 @@
     <string name="add_item_hint">Eklenecek ürünü giriniz</string>
     <string name="add_amount_of_item_hint">Ürün miktarını giriniz</string>
     <string name="add_item_to_list">Listeye Ekle</string>
+
 </resources>

@@ -17,7 +17,7 @@
         app:layout_constraintEnd_toEndOf="@+id/add_item_edit_text"
         app:layout_constraintHorizontal_bias="0.444"
         app:layout_constraintStart_toStartOf="@+id/add_item_edit_text"
-        app:layout_constraintTop_toBottomOf="@+id/editText2" />
+        app:layout_constraintTop_toBottomOf="@+id/add_amount_of_item" />
 
     <EditText
         android:id="@+id/add_item_edit_text"
@@ -35,7 +35,7 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <EditText
-        android:id="@+id/editText2"
+        android:id="@+id/add_amount_of_item"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"

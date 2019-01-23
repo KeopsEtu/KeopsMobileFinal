@@ -28,6 +28,7 @@ public class feedActivity extends AppCompatActivity {
     FirebaseDatabase database;
     DatabaseReference myRef;
     ArrayList<String> listItemFromFB;
+    ArrayList<Integer> counts;
     private FirebaseAuth mAuth;
 
     @Override
@@ -62,6 +63,7 @@ public class feedActivity extends AppCompatActivity {
         adapter = new postClass(listItemFromFB,listItemFromFB,this);
         listView.setAdapter(adapter);
         mAuth = FirebaseAuth.getInstance();
+        counts = new ArrayList<>();
         getDataFromFirebase();
     }
 
@@ -71,13 +73,27 @@ public class feedActivity extends AppCompatActivity {
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 for (DataSnapshot ds : dataSnapshot.getChildren()) {
                     HashMap<String,String> hashMap = (HashMap<String, String>) ds.getValue();
-                    String a = mAuth.getCurrentUser().getEmail();
-                    String b = hashMap.get("userEmail");
                     if(mAuth.getCurrentUser().getEmail().equals(hashMap.get("userEmail"))) {
+                        System.out.println("pvd" + hashMap);
+                        counts.add(Integer.parseInt(String.valueOf(hashMap.get("amountOfItem"))));
                         listItemFromFB.add(hashMap.get("item"));
-                        adapter.notifyDataSetChanged();
+
                     }
                 }
+
+                for(int i=0; i < counts.size(); i++){
+                    for(int j=1; j < (counts.size()-i); j++){
+                        if(counts.get(j-1) < counts.get(j)){
+                            int temp = counts.get(j-1);
+                            counts.set(j-1,counts.get(j));
+                            counts.set(j,temp);
+                            String temp2 = listItemFromFB.get(j-1);
+                            listItemFromFB.set(j-1,listItemFromFB.get(j));
+                            listItemFromFB.set(j,temp2);
+                        }
+                    }
+                }
+                adapter.notifyDataSetChanged();
             }
 
             @Override

@@ -8,13 +8,15 @@ android:background="@color/colorPrimary"
 android:padding="12dp"
 tools:context=".listenActivity">
 
-<EditText
-    android:id="@+id/editText"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:layout_centerVertical="true"
-    android:hint="You will see input here"
-    android:textAppearance="@style/Base.TextAppearance.AppCompat.Large" />
+    <EditText
+        android:id="@+id/editText"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="84dp"
+        android:hint="Girdiniz.."
+        android:textAppearance="@style/Base.TextAppearance.AppCompat.Large" />
 
 
 <ImageButton
@@ -25,5 +27,12 @@ tools:context=".listenActivity">
     android:layout_centerHorizontal="true"
     android:layout_marginBottom="20dp"
     android:background="@drawable/button_background" />
+
+    <Button
+        android:id="@+id/buttonAdder"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:text="Ekle" />
 
 </RelativeLayout>

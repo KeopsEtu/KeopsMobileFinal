@@ -18,6 +18,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
+import android.widget.Button;
 import android.widget.EditText;
 
 import com.google.firebase.auth.FirebaseAuth;
@@ -35,7 +36,7 @@ public class listenActivity extends AppCompatActivity {
     FirebaseDatabase database;
     DatabaseReference myRef;
     private FirebaseAuth mAuth;
-
+    String text="";
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater menuinflater = getMenuInflater();
@@ -71,6 +72,7 @@ public class listenActivity extends AppCompatActivity {
 
         final SpeechRecognizer mSpeechRecognizer = SpeechRecognizer.createSpeechRecognizer(this);
 
+        final Button addItem=(Button) findViewById(R.id.buttonAdder);
 
         final Intent mSpeechRecognizerIntent = new Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH);
         mSpeechRecognizerIntent.putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL,
@@ -118,12 +120,19 @@ public class listenActivity extends AppCompatActivity {
 
                 //displaying the first match
                 if (matches != null) {
+                    text=matches.get(0);
                     editText.setText(matches.get(0));
-                    FirebaseUser user = mAuth.getCurrentUser();
-                    String mail = user.getEmail();
-                    UUID uuid = UUID.randomUUID();
-                    myRef.child("list" + uuid).child("userEmail").setValue(mail);
-                    myRef.child("list" + uuid).child("item").setValue(matches.get(0));
+                    addItem.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+                            FirebaseUser user = mAuth.getCurrentUser();
+                            String mail = user.getEmail();
+                            UUID uuid = UUID.randomUUID();
+                            myRef.child("list" + uuid).child("userEmail").setValue(mail);
+                            myRef.child("list" + uuid).child("item").setValue(text);
+                        }
+                    });
+
                 }
             }
 
@@ -144,13 +153,13 @@ public class listenActivity extends AppCompatActivity {
                 switch (motionEvent.getAction()) {
                     case MotionEvent.ACTION_UP:
                         mSpeechRecognizer.stopListening();
-                        editText.setHint("You will see input here");
+                        editText.setHint("Girdiniz..");
                         break;
 
                     case MotionEvent.ACTION_DOWN:
                         mSpeechRecognizer.startListening(mSpeechRecognizerIntent);
                         editText.setText("");
-                        editText.setHint("Listening...");
+                        editText.setHint("Dinliyor...");
                         break;
                 }
                 return false;

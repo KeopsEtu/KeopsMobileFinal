@@ -124,6 +124,7 @@ public class listenActivity extends AppCompatActivity {
                     UUID uuid = UUID.randomUUID();
                     myRef.child("list" + uuid).child("userEmail").setValue(mail);
                     myRef.child("list" + uuid).child("item").setValue(matches.get(0));
+                    myRef.child("list" + uuid).child("amountOfItem").setValue(5);
                 }
             }
 

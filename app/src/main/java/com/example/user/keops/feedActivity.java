@@ -75,13 +75,13 @@ public class feedActivity extends AppCompatActivity {
                 for (DataSnapshot ds : dataSnapshot.getChildren()) {
                     HashMap<String,String> hashMap = (HashMap<String, String>) ds.getValue();
                     if(mAuth.getCurrentUser().getEmail().equals(hashMap.get("userEmail"))) {
-                        counts.add(Integer.parseInt(String.valueOf(hashMap.get("amountOfItem"))));
+                       // counts.add(Integer.parseInt(String.valueOf(hashMap.get("amountOfItem"))));
                         listItemFromFB.add(hashMap.get("item"));
 
                     }
                 }
 
-                for(int i=0; i < counts.size(); i++){
+             /*   for(int i=0; i < counts.size(); i++){
                     for(int j=1; j < (counts.size()-i); j++){
                         if(counts.get(j-1) < counts.get(j)){
                             int temp = counts.get(j-1);
@@ -92,7 +92,7 @@ public class feedActivity extends AppCompatActivity {
                             listItemFromFB.set(j,temp2);
                         }
                     }
-                }
+                }*/
                /* for (int position=0;position<counts.size();position++) {
                 button = findViewById(R.id.analysis);
                 final String temp = listItemFromFB.get(position);

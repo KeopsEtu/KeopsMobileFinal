@@ -137,7 +137,7 @@ public class listenActivity extends AppCompatActivity {
                             theBuild.setMessage(text+"eklendi");
                             theBuild.show();
 
-                            int timeout = 4000; // make the activity visible for 4 seconds
+                            int timeout = 5000; // make the activity visible for 4 seconds
 
                             Timer timer = new Timer();
                             timer.schedule(new TimerTask() {
@@ -145,8 +145,8 @@ public class listenActivity extends AppCompatActivity {
                                 @Override
                                 public void run() {
                                     finish();
-                                    Intent homepage = new Intent(listenActivity.this, feedActivity.class);
-                                    startActivity(homepage);
+                                    Intent feedPage = new Intent(listenActivity.this, feedActivity.class);
+                                    startActivity(feedPage);
                                 }
                             }, timeout);
                         }

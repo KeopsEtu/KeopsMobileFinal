@@ -11,6 +11,7 @@ import android.speech.RecognizerIntent;
 import android.speech.SpeechRecognizer;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.Menu;
@@ -29,6 +30,8 @@ import com.google.firebase.database.FirebaseDatabase;
 
 import java.util.ArrayList;
 import java.util.Locale;
+import java.util.Timer;
+import java.util.TimerTask;
 import java.util.UUID;
 
 public class listenActivity extends AppCompatActivity {
@@ -130,6 +133,22 @@ public class listenActivity extends AppCompatActivity {
                             UUID uuid = UUID.randomUUID();
                             myRef.child("list" + uuid).child("userEmail").setValue(mail);
                             myRef.child("list" + uuid).child("item").setValue(text);
+                            AlertDialog.Builder theBuild = new AlertDialog.Builder(listenActivity.this);
+                            theBuild.setMessage(text+"eklendi");
+                            theBuild.show();
+
+                            int timeout = 4000; // make the activity visible for 4 seconds
+
+                            Timer timer = new Timer();
+                            timer.schedule(new TimerTask() {
+
+                                @Override
+                                public void run() {
+                                    finish();
+                                    Intent homepage = new Intent(listenActivity.this, feedActivity.class);
+                                    startActivity(homepage);
+                                }
+                            }, timeout);
                         }
                     });
 

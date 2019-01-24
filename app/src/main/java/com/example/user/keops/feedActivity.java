@@ -7,9 +7,9 @@ import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
-import android.widget.CompoundButton;
+import android.view.View;
+import android.widget.Button;
 import android.widget.ListView;
-import android.widget.RadioButton;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
@@ -28,7 +28,9 @@ public class feedActivity extends AppCompatActivity {
     FirebaseDatabase database;
     DatabaseReference myRef;
     ArrayList<String> listItemFromFB;
+    ArrayList<Integer> counts;
     private FirebaseAuth mAuth;
+    Button button;
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -62,6 +64,7 @@ public class feedActivity extends AppCompatActivity {
         adapter = new postClass(listItemFromFB,listItemFromFB,this);
         listView.setAdapter(adapter);
         mAuth = FirebaseAuth.getInstance();
+        counts = new ArrayList<>();
         getDataFromFirebase();
     }
 
@@ -71,13 +74,37 @@ public class feedActivity extends AppCompatActivity {
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 for (DataSnapshot ds : dataSnapshot.getChildren()) {
                     HashMap<String,String> hashMap = (HashMap<String, String>) ds.getValue();
-                    String a = mAuth.getCurrentUser().getEmail();
-                    String b = hashMap.get("userEmail");
                     if(mAuth.getCurrentUser().getEmail().equals(hashMap.get("userEmail"))) {
+                       // counts.add(Integer.parseInt(String.valueOf(hashMap.get("amountOfItem"))));
                         listItemFromFB.add(hashMap.get("item"));
-                        adapter.notifyDataSetChanged();
+
                     }
                 }
+
+             /*   for(int i=0; i < counts.size(); i++){
+                    for(int j=1; j < (counts.size()-i); j++){
+                        if(counts.get(j-1) < counts.get(j)){
+                            int temp = counts.get(j-1);
+                            counts.set(j-1,counts.get(j));
+                            counts.set(j,temp);
+                            String temp2 = listItemFromFB.get(j-1);
+                            listItemFromFB.set(j-1,listItemFromFB.get(j));
+                            listItemFromFB.set(j,temp2);
+                        }
+                    }
+                }*/
+               /* for (int position=0;position<counts.size();position++) {
+                button = findViewById(R.id.analysis);
+                final String temp = listItemFromFB.get(position);
+                button.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        Intent i = new Intent(getApplicationContext(), analysisActivity.class);
+                        i.putExtra("send_string",temp);
+                        startActivity(i);
+                    }
+                });}*/
+                adapter.notifyDataSetChanged();
             }
 
             @Override

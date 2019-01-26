@@ -117,7 +117,7 @@ public class listenActivity extends AppCompatActivity {
 
             @Override
             public void onResults(Bundle bundle) {
-                
+
                 ArrayList<String> matches = bundle
                         .getStringArrayList(SpeechRecognizer.RESULTS_RECOGNITION);
 
@@ -131,25 +131,50 @@ public class listenActivity extends AppCompatActivity {
                             FirebaseUser user = mAuth.getCurrentUser();
                             String mail = user.getEmail();
                             UUID uuid = UUID.randomUUID();
-                            myRef.child("list" + uuid).child("userEmail").setValue(mail);
-                            myRef.child("list" + uuid).child("item").setValue(text.substring(text.indexOf(" ")+1));
-                            myRef.child("list" + uuid).child("amountOfItem").setValue(text.substring(0,text.indexOf(" ")));
-                            AlertDialog.Builder theBuild = new AlertDialog.Builder(listenActivity.this);
-                            theBuild.setMessage(text+" eklendi");
-                            theBuild.show();
+                            if(text.matches("[a-zA-Z]+")){
+                                myRef.child("list" + uuid).child("userEmail").setValue(mail);
+                                myRef.child("list" + uuid).child("item").setValue(text);
+                                myRef.child("list" + uuid).child("amountOfItem").setValue("1");
+                                AlertDialog.Builder theBuild = new AlertDialog.Builder(listenActivity.this);
+                                theBuild.setMessage(text+" eklendi");
+                                theBuild.show();
 
-                            int timeout = 3000;
+                                int timeout = 3000;
 
-                            Timer timer = new Timer();
-                            timer.schedule(new TimerTask() {
+                                Timer timer = new Timer();
+                                timer.schedule(new TimerTask() {
 
-                                @Override
-                                public void run() {
-                                    finish();
-                                    Intent feedPage = new Intent(listenActivity.this, feedActivity.class);
-                                    startActivity(feedPage);
-                                }
-                            }, timeout);
+                                    @Override
+                                    public void run() {
+                                        finish();
+                                        Intent feedPage = new Intent(listenActivity.this, feedActivity.class);
+                                        startActivity(feedPage);
+                                    }
+                                }, timeout);
+                            }
+                            else{
+                                myRef.child("list" + uuid).child("userEmail").setValue(mail);
+                                myRef.child("list" + uuid).child("item").setValue(text.substring(text.indexOf(" ")+1));
+                                myRef.child("list" + uuid).child("amountOfItem").setValue(text.substring(0,text.indexOf(" ")));
+                                AlertDialog.Builder theBuild = new AlertDialog.Builder(listenActivity.this);
+                                theBuild.setMessage(text+" eklendi");
+                                theBuild.show();
+
+                                int timeout = 3000;
+
+                                Timer timer = new Timer();
+                                timer.schedule(new TimerTask() {
+
+                                    @Override
+                                    public void run() {
+                                        finish();
+                                        Intent feedPage = new Intent(listenActivity.this, feedActivity.class);
+                                        startActivity(feedPage);
+                                    }
+                                }, timeout);
+                            }
+
+
                         }
                     });
 

@@ -45,8 +45,10 @@ public class feedActivity extends AppCompatActivity {
         if (item.getItemId() == R.id.listener) {
             Intent intent = new Intent(getApplicationContext(), listenActivity.class);
             startActivity(intent);
-        } else if (item.getItemId() == R.id.list) {
-            Intent intent = new Intent(getApplicationContext(), addItemViaKeyboardActivity.class);
+        }
+        else if(item.getItemId() == R.id.list) {
+            Intent intent =  new Intent(getApplicationContext(), addItemViaKeyboardActivity.class);
+            intent.putExtra("s","activity");
             startActivity(intent);
         }
         return super.onOptionsItemSelected(item);
@@ -144,6 +146,7 @@ public class feedActivity extends AppCompatActivity {
 
     public void addButton(View view) {
         Intent intent = new Intent(getApplicationContext(), addItemViaKeyboardActivity.class);
+        intent.putExtra("s","activity");
         startActivity(intent);
     }
 }

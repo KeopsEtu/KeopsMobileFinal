@@ -11,6 +11,7 @@ import android.speech.RecognizerIntent;
 import android.speech.SpeechRecognizer;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.Menu;
@@ -18,6 +19,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
+import android.widget.Button;
 import android.widget.EditText;
 
 import com.google.firebase.auth.FirebaseAuth;
@@ -28,6 +30,8 @@ import com.google.firebase.database.FirebaseDatabase;
 
 import java.util.ArrayList;
 import java.util.Locale;
+import java.util.Timer;
+import java.util.TimerTask;
 import java.util.UUID;
 
 public class listenActivity extends AppCompatActivity {
@@ -35,7 +39,7 @@ public class listenActivity extends AppCompatActivity {
     FirebaseDatabase database;
     DatabaseReference myRef;
     private FirebaseAuth mAuth;
-
+    String text="";
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater menuinflater = getMenuInflater();
@@ -71,6 +75,7 @@ public class listenActivity extends AppCompatActivity {
 
         final SpeechRecognizer mSpeechRecognizer = SpeechRecognizer.createSpeechRecognizer(this);
 
+        final Button addItem=(Button) findViewById(R.id.buttonAdder);
 
         final Intent mSpeechRecognizerIntent = new Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH);
         mSpeechRecognizerIntent.putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL,
@@ -112,19 +117,42 @@ public class listenActivity extends AppCompatActivity {
 
             @Override
             public void onResults(Bundle bundle) {
-                //getting all the matches
+                
                 ArrayList<String> matches = bundle
                         .getStringArrayList(SpeechRecognizer.RESULTS_RECOGNITION);
 
-                //displaying the first match
+
                 if (matches != null) {
+                    text=matches.get(0);
                     editText.setText(matches.get(0));
-                    FirebaseUser user = mAuth.getCurrentUser();
-                    String mail = user.getEmail();
-                    UUID uuid = UUID.randomUUID();
-                    myRef.child("list" + uuid).child("userEmail").setValue(mail);
-                    myRef.child("list" + uuid).child("item").setValue(matches.get(0));
-                    myRef.child("list" + uuid).child("amountOfItem").setValue(5);
+                    addItem.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+                            FirebaseUser user = mAuth.getCurrentUser();
+                            String mail = user.getEmail();
+                            UUID uuid = UUID.randomUUID();
+                            myRef.child("list" + uuid).child("userEmail").setValue(mail);
+                            myRef.child("list" + uuid).child("item").setValue(text.substring(text.indexOf(" ")+1));
+                            myRef.child("list" + uuid).child("amountOfItem").setValue(text.substring(0,text.indexOf(" ")));
+                            AlertDialog.Builder theBuild = new AlertDialog.Builder(listenActivity.this);
+                            theBuild.setMessage(text+" eklendi");
+                            theBuild.show();
+
+                            int timeout = 3000;
+
+                            Timer timer = new Timer();
+                            timer.schedule(new TimerTask() {
+
+                                @Override
+                                public void run() {
+                                    finish();
+                                    Intent feedPage = new Intent(listenActivity.this, feedActivity.class);
+                                    startActivity(feedPage);
+                                }
+                            }, timeout);
+                        }
+                    });
+
                 }
             }
 
@@ -145,13 +173,13 @@ public class listenActivity extends AppCompatActivity {
                 switch (motionEvent.getAction()) {
                     case MotionEvent.ACTION_UP:
                         mSpeechRecognizer.stopListening();
-                        editText.setHint("You will see input here");
+                        editText.setHint("Girdiniz..");
                         break;
 
                     case MotionEvent.ACTION_DOWN:
                         mSpeechRecognizer.startListening(mSpeechRecognizerIntent);
                         editText.setText("");
-                        editText.setHint("Listening...");
+                        editText.setHint("Dinliyor...");
                         break;
                 }
                 return false;

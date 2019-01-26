@@ -12,6 +12,7 @@ import android.widget.Button;
 import android.widget.ListView;
 
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -35,18 +36,17 @@ public class feedActivity extends AppCompatActivity {
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater menuinflater = getMenuInflater();
-        menuinflater.inflate(R.menu.listener,menu);
+        menuinflater.inflate(R.menu.listener, menu);
         return super.onCreateOptionsMenu(menu);
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        if(item.getItemId() == R.id.listener) {
-            Intent intent =  new Intent(getApplicationContext(), listenActivity.class);
+        if (item.getItemId() == R.id.listener) {
+            Intent intent = new Intent(getApplicationContext(), listenActivity.class);
             startActivity(intent);
-        }
-        else if(item.getItemId() == R.id.list) {
-            Intent intent =  new Intent(getApplicationContext(), addItemViaKeyboardActivity.class);
+        } else if (item.getItemId() == R.id.list) {
+            Intent intent = new Intent(getApplicationContext(), addItemViaKeyboardActivity.class);
             startActivity(intent);
         }
         return super.onOptionsItemSelected(item);
@@ -61,7 +61,7 @@ public class feedActivity extends AppCompatActivity {
         myRef = database.getReference();
         listView = findViewById(R.id.listView);
         listItemFromFB = new ArrayList<>();
-        adapter = new postClass(listItemFromFB,listItemFromFB,this);
+        adapter = new postClass(listItemFromFB, listItemFromFB, this);
         listView.setAdapter(adapter);
         mAuth = FirebaseAuth.getInstance();
         counts = new ArrayList<>();
@@ -73,23 +73,23 @@ public class feedActivity extends AppCompatActivity {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 for (DataSnapshot ds : dataSnapshot.getChildren()) {
-                    HashMap<String,String> hashMap = (HashMap<String, String>) ds.getValue();
-                    if(mAuth.getCurrentUser().getEmail().equals(hashMap.get("userEmail"))) {
+                    HashMap<String, String> hashMap = (HashMap<String, String>) ds.getValue();
+                    if (mAuth.getCurrentUser().getEmail().equals(hashMap.get("userEmail"))) {
                         listItemFromFB.add(hashMap.get("item"));
                         if (hashMap.get("amountOfItem") != null)
                             counts.add(Integer.parseInt(String.valueOf(hashMap.get("amountOfItem"))));
                     }
                 }
 
-                for(int i=0; i < counts.size(); i++){
-                    for(int j=1; j < (counts.size()-i); j++){
-                        if(counts.get(j-1) < counts.get(j)){
-                            int temp = counts.get(j-1);
-                            counts.set(j-1,counts.get(j));
-                            counts.set(j,temp);
-                            String temp2 = listItemFromFB.get(j-1);
-                            listItemFromFB.set(j-1,listItemFromFB.get(j));
-                            listItemFromFB.set(j,temp2);
+                for (int i = 0; i < counts.size(); i++) {
+                    for (int j = 1; j < (counts.size() - i); j++) {
+                        if (counts.get(j - 1) < counts.get(j)) {
+                            int temp = counts.get(j - 1);
+                            counts.set(j - 1, counts.get(j));
+                            counts.set(j, temp);
+                            String temp2 = listItemFromFB.get(j - 1);
+                            listItemFromFB.set(j - 1, listItemFromFB.get(j));
+                            listItemFromFB.set(j, temp2);
                         }
                     }
                 }
@@ -114,11 +114,35 @@ public class feedActivity extends AppCompatActivity {
         });
     }
 
-    public void removeButton(View view){
+    public void removeButton(View view) {
 
+        myRef.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                FirebaseUser user = mAuth.getCurrentUser();
+                String userID = user.getUid();
+
+                for (DataSnapshot ds : dataSnapshot.getChildren()) {
+                    HashMap<String, String> hashMap = (HashMap<String, String>) ds.getValue();
+                    if (mAuth.getCurrentUser().getEmail().equals(hashMap.get("userEmail"))) {
+                        if (hashMap.get("item") != null && hashMap.get("item").equals("erik")) {
+                            myRef.child("erik" + userID).child("item").removeValue();
+                            myRef.child("erik" + userID).child("amountOfItem").removeValue();
+                            myRef.child("erik" + userID).child("userEmail").removeValue();
+                        }
+                    }
+                }
+                adapter.notifyDataSetChanged();
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
     }
 
-    public void addButton(View view){
+    public void addButton(View view) {
         Intent intent = new Intent(getApplicationContext(), addItemViaKeyboardActivity.class);
         startActivity(intent);
     }

@@ -15,14 +15,10 @@ import android.widget.Toast;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.UUID;
 
 public class addItemViaKeyboardActivity extends AppCompatActivity {
@@ -73,61 +69,34 @@ public class addItemViaKeyboardActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 addToDatabase(view);
-                removeItemFromDatabase(view);
             }
         });
 
         counts = new ArrayList<>();
         listItemFromFB = new ArrayList<>();
-        adapter = new postClass(listItemFromFB,listItemFromFB,this);
+        adapter = new postClass(listItemFromFB, listItemFromFB, this);
 
     }
 
     protected void addToDatabase(View view) {
         FirebaseUser user = mAuth.getCurrentUser();
         String mail = user.getEmail();
-        UUID uuid = UUID.randomUUID();
+        String userID = user.getUid();
+        String itemName = item.getText().toString();
+
+        String databaseListName = itemName+userID;
         if (amountOfItem.getText().toString().equals("")) {
             Toast.makeText(getApplicationContext(), "Lütfen ürün miktarını giriniz ...", Toast.LENGTH_LONG).show();
         } else if (item.getText().toString().equals("")) {
             Toast.makeText(getApplicationContext(), "Lütfen ürün ismini giriniz ...", Toast.LENGTH_LONG).show();
         } else {
-            myRef.child("list" + uuid).child("userEmail").setValue(mail);
-            myRef.child("list" + uuid).child("item").setValue(item.getText().toString());
-            myRef.child("list" + uuid).child("amountOfItem").setValue(amountOfItem.getText().toString());
+            myRef.child(databaseListName).child("userEmail").setValue(mail);
+            myRef.child(databaseListName).child("item").setValue(item.getText().toString());
+            myRef.child(databaseListName).child("amountOfItem").setValue(amountOfItem.getText().toString());
 
             Toast.makeText(getApplicationContext(), amountOfItem.getText().toString() + " " +
                     item.getText().toString() + "  Başarıyla eklendi ...", Toast.LENGTH_LONG).show();
         }
     }
 
-    protected void removeItemFromDatabase(View view) {
-
-        myRef.addValueEventListener(new ValueEventListener() {
-            FirebaseUser user = mAuth.getCurrentUser();
-            // String mail = user.getEmail();
-            UUID uuid = UUID.randomUUID();
-            @Override
-            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                for (DataSnapshot ds : dataSnapshot.getChildren()) {
-                    HashMap<String,String> hashMap = (HashMap<String, String>) ds.getValue();
-                    if(mAuth.getCurrentUser().getEmail().equals(hashMap.get("userEmail"))) {
-                        if(hashMap.get("item") != null && hashMap.get("item").equals("erik")){
-                            System.out.println(String.valueOf(hashMap.get("item")));
-                            return;
-                        }
-                    }
-                }
-
-                adapter.notifyDataSetChanged();
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
-
-            }
-        });
-    }
-
-
-    }
+}

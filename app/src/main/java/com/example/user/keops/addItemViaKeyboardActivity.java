@@ -81,7 +81,7 @@ public class addItemViaKeyboardActivity extends AppCompatActivity {
         FirebaseUser user = mAuth.getCurrentUser();
         String mail = user.getEmail();
         String userID = user.getUid();
-        String itemName = item.getText().toString();
+        String itemName = item.getText().toString().toLowerCase();
 
         String databaseListName = itemName + userID;
         if (amountOfItem.getText().toString().equals("")) {
@@ -90,11 +90,11 @@ public class addItemViaKeyboardActivity extends AppCompatActivity {
             Toast.makeText(getApplicationContext(), "Lütfen ürün ismini giriniz ...", Toast.LENGTH_LONG).show();
         } else {
             myRef.child(databaseListName).child("userEmail").setValue(mail);
-            myRef.child(databaseListName).child("item").setValue(item.getText().toString().toLowerCase());
+            myRef.child(databaseListName).child("item").setValue(itemName);
             myRef.child(databaseListName).child("amountOfItem").setValue(amountOfItem.getText().toString());
 
             Toast.makeText(getApplicationContext(), amountOfItem.getText().toString() + " " +
-                    item.getText().toString().toLowerCase() + "  Başarıyla eklendi ...", Toast.LENGTH_LONG).show();
+                    itemName + "  Başarıyla eklendi ...", Toast.LENGTH_LONG).show();
 
             item.setText("");
             amountOfItem.setText("");

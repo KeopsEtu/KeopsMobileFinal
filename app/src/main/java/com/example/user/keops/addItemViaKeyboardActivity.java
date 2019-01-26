@@ -1,11 +1,13 @@
 package com.example.user.keops;
 
+import android.content.Context;
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.view.View;
@@ -81,6 +83,20 @@ public class addItemViaKeyboardActivity extends AppCompatActivity {
 
             Toast.makeText(getApplicationContext(), amountOfItem.getText().toString() + " " +
                     item.getText().toString() + "  Başarıyla eklendi ...", Toast.LENGTH_LONG).show();
+            View view5 = this.getCurrentFocus();
+            if (view5 != null) {
+                InputMethodManager imm = (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
+                imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
+            }
+        }
+    }
+    public void onBackPressed() {
+        Bundle extras = getIntent().getExtras();
+        if(extras != null && extras.getString("s").equals("activity")) {
+            Intent intent = new Intent(this, feedActivity.class);
+            startActivity(intent);
+        } else {
+            super.onBackPressed();
         }
     }
 }

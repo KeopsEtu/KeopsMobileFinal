@@ -114,4 +114,13 @@ public class feedActivity extends AppCompatActivity {
             }
         });
     }
+
+    public void removeButton(View view){
+
+    }
+
+    public void addButton(View view){
+        Intent intent = new Intent(getApplicationContext(), addItemViaKeyboardActivity.class);
+        startActivity(intent);
+    }
 }

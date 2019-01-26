@@ -78,7 +78,6 @@ public class feedActivity extends AppCompatActivity {
                         listItemFromFB.add(hashMap.get("item"));
                         if (hashMap.get("amountOfItem") != null)
                             counts.add(Integer.parseInt(String.valueOf(hashMap.get("amountOfItem"))));
-
                     }
                 }
 

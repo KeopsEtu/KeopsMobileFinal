@@ -1,8 +1,10 @@
 package com.example.user.keops;
 
 import android.content.Intent;
+import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -13,9 +15,14 @@ import android.widget.Toast;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.UUID;
 
 public class addItemViaKeyboardActivity extends AppCompatActivity {
@@ -25,6 +32,10 @@ public class addItemViaKeyboardActivity extends AppCompatActivity {
     private FirebaseAuth mAuth;
     EditText item, amountOfItem;
     Button addItemButton;
+
+    ArrayList<String> listItemFromFB;
+    ArrayList<Integer> counts;
+    postClass adapter;
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -62,8 +73,14 @@ public class addItemViaKeyboardActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 addToDatabase(view);
+                removeItemFromDatabase(view);
             }
         });
+
+        counts = new ArrayList<>();
+        listItemFromFB = new ArrayList<>();
+        adapter = new postClass(listItemFromFB,listItemFromFB,this);
+
     }
 
     protected void addToDatabase(View view) {
@@ -83,4 +100,34 @@ public class addItemViaKeyboardActivity extends AppCompatActivity {
                     item.getText().toString() + "  Başarıyla eklendi ...", Toast.LENGTH_LONG).show();
         }
     }
-}
+
+    protected void removeItemFromDatabase(View view) {
+
+        myRef.addValueEventListener(new ValueEventListener() {
+            FirebaseUser user = mAuth.getCurrentUser();
+            // String mail = user.getEmail();
+            UUID uuid = UUID.randomUUID();
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                for (DataSnapshot ds : dataSnapshot.getChildren()) {
+                    HashMap<String,String> hashMap = (HashMap<String, String>) ds.getValue();
+                    if(mAuth.getCurrentUser().getEmail().equals(hashMap.get("userEmail"))) {
+                        if(hashMap.get("item") != null && hashMap.get("item").equals("erik")){
+                            System.out.println(String.valueOf(hashMap.get("item")));
+                            return;
+                        }
+                    }
+                }
+
+                adapter.notifyDataSetChanged();
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+    }
+
+
+    }

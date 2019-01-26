@@ -2,10 +2,8 @@ package com.example.user.keops;
 
 import android.content.Context;
 import android.content.Intent;
-import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -21,7 +19,6 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
 import java.util.ArrayList;
-import java.util.UUID;
 
 public class addItemViaKeyboardActivity extends AppCompatActivity {
 
@@ -86,28 +83,33 @@ public class addItemViaKeyboardActivity extends AppCompatActivity {
         String userID = user.getUid();
         String itemName = item.getText().toString();
 
-        String databaseListName = itemName+userID;
+        String databaseListName = itemName + userID;
         if (amountOfItem.getText().toString().equals("")) {
             Toast.makeText(getApplicationContext(), "Lütfen ürün miktarını giriniz ...", Toast.LENGTH_LONG).show();
         } else if (item.getText().toString().equals("")) {
             Toast.makeText(getApplicationContext(), "Lütfen ürün ismini giriniz ...", Toast.LENGTH_LONG).show();
         } else {
             myRef.child(databaseListName).child("userEmail").setValue(mail);
-            myRef.child(databaseListName).child("item").setValue(item.getText().toString());
+            myRef.child(databaseListName).child("item").setValue(item.getText().toString().toLowerCase());
             myRef.child(databaseListName).child("amountOfItem").setValue(amountOfItem.getText().toString());
 
             Toast.makeText(getApplicationContext(), amountOfItem.getText().toString() + " " +
-                    item.getText().toString() + "  Başarıyla eklendi ...", Toast.LENGTH_LONG).show();
+                    item.getText().toString().toLowerCase() + "  Başarıyla eklendi ...", Toast.LENGTH_LONG).show();
+
+            item.setText("");
+            amountOfItem.setText("");
+
             View view5 = this.getCurrentFocus();
             if (view5 != null) {
-                InputMethodManager imm = (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
+                InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
                 imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
             }
         }
     }
+
     public void onBackPressed() {
         Bundle extras = getIntent().getExtras();
-        if(extras != null && extras.getString("s").equals("activity")) {
+        if (extras != null && extras.getString("s").equals("activity")) {
             Intent intent = new Intent(this, feedActivity.class);
             startActivity(intent);
         } else {

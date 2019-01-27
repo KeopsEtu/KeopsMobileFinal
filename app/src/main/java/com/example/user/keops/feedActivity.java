@@ -52,6 +52,10 @@ public class feedActivity extends AppCompatActivity {
             Intent intent = new Intent(getApplicationContext(), addItemViaKeyboardActivity.class);
             intent.putExtra("s", "activity");
             startActivity(intent);
+        } else if (item.getItemId() == R.id.logout) {
+            mAuth.signOut();
+            Intent intent = new Intent(getApplicationContext(), MainActivity.class);
+            startActivity(intent);
         }
         return super.onOptionsItemSelected(item);
     }

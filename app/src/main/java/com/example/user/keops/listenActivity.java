@@ -56,6 +56,10 @@ public class listenActivity extends AppCompatActivity {
         else if(item.getItemId() == R.id.list) {
             Intent intent =  new Intent(getApplicationContext(), addItemViaKeyboardActivity.class);
             startActivity(intent);
+        } else if (item.getItemId() == R.id.logout) {
+            mAuth.signOut();
+            Intent intent = new Intent(getApplicationContext(), MainActivity.class);
+            startActivity(intent);
         }
         return super.onOptionsItemSelected(item);
     }

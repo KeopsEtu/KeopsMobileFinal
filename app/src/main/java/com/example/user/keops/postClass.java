@@ -5,6 +5,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.CheckBox;
 import android.widget.TextView;
 
 import java.util.ArrayList;
@@ -26,7 +27,10 @@ public class postClass extends ArrayAdapter<String> {
         LayoutInflater layoutInflater = context.getLayoutInflater();
         View customView = layoutInflater.inflate(R.layout.custom_view,null,true);
         TextView list = customView.findViewById(R.id.list_item);
+        CheckBox l = customView.findViewById(R.id.list_item);
         list.setText(listitem.get(position));
         return customView;
     }
+
+
 }

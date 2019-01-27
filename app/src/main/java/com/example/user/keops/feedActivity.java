@@ -9,6 +9,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.ListView;
 
 import com.google.firebase.auth.FirebaseAuth;
@@ -29,6 +30,8 @@ public class feedActivity extends AppCompatActivity {
     FirebaseDatabase database;
     DatabaseReference myRef;
     ArrayList<String> listItemFromFB;
+    ArrayList<String> delete;
+    ArrayList<String> temp;
     ArrayList<Integer> counts;
     private FirebaseAuth mAuth;
     Button button;
@@ -66,6 +69,8 @@ public class feedActivity extends AppCompatActivity {
         listView.setAdapter(adapter);
         mAuth = FirebaseAuth.getInstance();
         counts = new ArrayList<>();
+        delete = new ArrayList<>();
+        temp = new ArrayList<>();
         getDataFromFirebase();
     }
 
@@ -76,9 +81,18 @@ public class feedActivity extends AppCompatActivity {
                 for (DataSnapshot ds : dataSnapshot.getChildren()) {
                     HashMap<String, String> hashMap = (HashMap<String, String>) ds.getValue();
                     if (mAuth.getCurrentUser().getEmail().equals(hashMap.get("userEmail"))) {
-                        listItemFromFB.add(hashMap.get("item"));
-                        if (hashMap.get("amountOfItem") != null)
-                            counts.add(Integer.parseInt(String.valueOf(hashMap.get("amountOfItem"))));
+                        if (hashMap.get("amountOfItem") != null) {
+                            if (hashMap.get("removedCount") == null) {
+                                listItemFromFB.add(hashMap.get("item"));
+                                counts.add(Integer.parseInt(String.valueOf(hashMap.get("amountOfItem"))));
+                            }
+                            else {
+                                if (!(hashMap.get("amountOfItem").equals(hashMap.get("removedCount")))) {
+                                    listItemFromFB.add(hashMap.get("item"));
+                                    counts.add(Integer.parseInt(String.valueOf(hashMap.get("amountOfItem"))));
+                                }
+                            }
+                        }
                     }
                 }
 
@@ -117,30 +131,23 @@ public class feedActivity extends AppCompatActivity {
 
     public void removeButton(View view) {
 
-        myRef.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                FirebaseUser user = mAuth.getCurrentUser();
-                String userID = user.getUid();
-
-                for (DataSnapshot ds : dataSnapshot.getChildren()) {
-                    HashMap<String, String> hashMap = (HashMap<String, String>) ds.getValue();
-                    if (mAuth.getCurrentUser().getEmail().equals(hashMap.get("userEmail"))) {
-                        if (hashMap.get("item") != null && hashMap.get("item").equals("erik")) {
-                            myRef.child("erik" + userID).child("item").removeValue();
-                            myRef.child("erik" + userID).child("amountOfItem").removeValue();
-                            myRef.child("erik" + userID).child("userEmail").removeValue();
-                        }
-                    }
-                }
-                adapter.notifyDataSetChanged();
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
-
-            }
-        });
+        FirebaseUser user = mAuth.getCurrentUser();
+        String userID = user.getUid();
+        ListView list = findViewById(R.id.listView);
+        for (int i = 0; i < list.getChildCount(); i++) {
+            View view2 = list.getChildAt(i);
+            CheckBox cv = view2.findViewById(R.id.list_item);
+            if(cv.isChecked())
+                delete.add(cv.getText().toString());
+        }
+        for (String s: delete)
+            for (int i = 0; i < counts.size(); i++)
+                if (listItemFromFB.get(i) != null && listItemFromFB.get(i).equals(s))
+                    temp.add(counts.get(i).toString());
+        for (int i=0;i<delete.size();i++)
+            myRef.child(delete.get(i) + userID).child("removedCount").setValue(temp.get(i));
+        Intent intent =  new Intent(getApplicationContext(), feedActivity.class);
+        startActivity(intent);
     }
 
     public void addButton(View view) {

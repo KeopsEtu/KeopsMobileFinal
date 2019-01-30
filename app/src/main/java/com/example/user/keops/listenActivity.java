@@ -134,11 +134,11 @@ public class listenActivity extends AppCompatActivity {
                         public void onClick(View view) {
                             FirebaseUser user = mAuth.getCurrentUser();
                             String mail = user.getEmail();
-                            UUID uuid = UUID.randomUUID();
                             if(text.matches("[a-zA-Z]+")){
-                                myRef.child("list" + uuid).child("userEmail").setValue(mail);
-                                myRef.child("list" + uuid).child("item").setValue(text);
-                                myRef.child("list" + uuid).child("amountOfItem").setValue("1");
+                                String databaseListName = text.toLowerCase() + user.getUid();
+                                myRef.child(databaseListName).child("userEmail").setValue(mail);
+                                myRef.child(databaseListName).child("item").setValue(text);
+                                myRef.child(databaseListName).child("amountOfItem").setValue("1");
                                 AlertDialog.Builder theBuild = new AlertDialog.Builder(listenActivity.this);
                                 theBuild.setMessage(text+" eklendi");
                                 theBuild.show();
@@ -157,9 +157,10 @@ public class listenActivity extends AppCompatActivity {
                                 }, timeout);
                             }
                             else{
-                                myRef.child("list" + uuid).child("userEmail").setValue(mail);
-                                myRef.child("list" + uuid).child("item").setValue(text.substring(text.indexOf(" ")+1));
-                                myRef.child("list" + uuid).child("amountOfItem").setValue(text.substring(0,text.indexOf(" ")));
+                                String databaseListName = text.substring(text.indexOf(" ")+1).toLowerCase() + user.getUid();
+                                myRef.child(databaseListName).child("userEmail").setValue(mail);
+                                myRef.child(databaseListName).child("item").setValue(text.substring(text.indexOf(" ")+1));
+                                myRef.child(databaseListName).child("amountOfItem").setValue(text.substring(0,text.indexOf(" ")));
                                 AlertDialog.Builder theBuild = new AlertDialog.Builder(listenActivity.this);
                                 theBuild.setMessage(text+" eklendi");
                                 theBuild.show();

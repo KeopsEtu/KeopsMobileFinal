@@ -22,10 +22,20 @@
 
     <CheckBox
         android:id="@+id/list_item"
-        android:layout_width="371dp"
+        android:layout_width="336dp"
         android:layout_height="39dp"
+        android:layout_marginEnd="7dp"
         android:text="CheckBox"
-        tools:layout_editor_absoluteX="16dp"
+        app:layout_constraintEnd_toStartOf="@+id/view_a"
         tools:layout_editor_absoluteY="10dp" />
+
+    <Button
+        android:id="@+id/view_a"
+        android:layout_width="36dp"
+        android:layout_height="36dp"
+        android:layout_marginEnd="8dp"
+        android:text="V"
+        app:layout_constraintEnd_toEndOf="@+id/barrier"
+        app:layout_constraintTop_toTopOf="parent" />
 
 </android.support.constraint.ConstraintLayout>

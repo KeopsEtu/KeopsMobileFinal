@@ -7,12 +7,12 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.widget.ListView;
+import android.widget.TextView;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
-import java.util.ArrayList;
 
 public class analysisActivity extends AppCompatActivity {
     ListView listView;
@@ -52,16 +52,14 @@ public class analysisActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_feed);
+        setContentView(R.layout.activity_analysis);
 
         database = FirebaseDatabase.getInstance();
         myRef = database.getReference();
-        listView = findViewById(R.id.listView);
-
-        listView.setAdapter(adapter);
         mAuth = FirebaseAuth.getInstance();
 
         Bundle extras = getIntent().getExtras();
-        ArrayList<String> value = extras.getStringArrayList("send_string");
+        String value = extras.getString("send_string");
+        System.out.println("onemli " + value);
     }
 }

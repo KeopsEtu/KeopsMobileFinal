@@ -37,6 +37,7 @@ public class feedActivity extends AppCompatActivity {
     ArrayList<String> temp;
     ArrayList<Integer> counts;
     private FirebaseAuth mAuth;
+    ArrayList<HashMap<String, String>> hashMapsOfItems = new ArrayList<>();
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -86,6 +87,9 @@ public class feedActivity extends AppCompatActivity {
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 for (DataSnapshot ds : dataSnapshot.getChildren()) {
                     HashMap<String, String> hashMap = (HashMap<String, String>) ds.getValue();
+
+                    hashMapsOfItems.add(hashMap);
+
                     if (mAuth.getCurrentUser().getEmail().equals(hashMap.get("userEmail"))) {
                         if (hashMap.get("amountOfItem") != null) {
                             if (hashMap.get("removedCount") == null) {
@@ -126,20 +130,31 @@ public class feedActivity extends AppCompatActivity {
     public void removeButton(View view) {
         FirebaseUser user = mAuth.getCurrentUser();
         String userID = user.getUid();
+        String userEmail = user.getEmail();
         ListView list = findViewById(R.id.listView);
+
         for (int i = 0; i < list.getChildCount(); i++) {
             View view2 = list.getChildAt(i);
             CheckBox cv = view2.findViewById(R.id.list_item);
             if (cv.isChecked())
                 delete.add(cv.getText().toString());
         }
+
         for (String s : delete)
             for (int i = 0; i < counts.size(); i++)
                 if (listItemFromFB.get(i) != null && listItemFromFB.get(i).equals(s))
                     temp.add(counts.get(i).toString());
 
-        for (int i = 0; i < delete.size(); i++)
-            myRef.child(delete.get(i) + userID).child("removed " + getCurrentDate()).setValue(temp.get(i));
+        for (int s = 0; s < delete.size(); s++)
+            for (int i = 0; i < hashMapsOfItems.size(); i++)
+                if (hashMapsOfItems.get(i).get("item") != null && hashMapsOfItems.get(i).get("item").equals(delete.get(s)) &&
+                        hashMapsOfItems.get(i).get("userEmail") != null && hashMapsOfItems.get(i).get("userEmail").equals(userEmail)) {
+                    int newValue = Integer.parseInt(hashMapsOfItems.get(i).get("amountOfItem")) - 1;
+
+                    myRef.child(delete.get(s) + userID).child("removed " + getCurrentDate()).setValue("" + 1);
+                    myRef.child(delete.get(s) + userID).child("amountOfItem").setValue("" + newValue);
+                }
+
         Intent intent = new Intent(getApplicationContext(), feedActivity.class);
         startActivity(intent);
     }

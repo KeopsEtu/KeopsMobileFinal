@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -20,7 +21,9 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
+import java.io.Console;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 
 public class feedActivity extends AppCompatActivity {
@@ -88,8 +91,7 @@ public class feedActivity extends AppCompatActivity {
                             if (hashMap.get("removedCount") == null) {
                                 listItemFromFB.add(hashMap.get("item"));
                                 counts.add(Integer.parseInt(String.valueOf(hashMap.get("amountOfItem"))));
-                            }
-                            else {
+                            } else {
                                 if (!(hashMap.get("amountOfItem").equals(hashMap.get("removedCount")))) {
                                     listItemFromFB.add(hashMap.get("item"));
                                     counts.add(Integer.parseInt(String.valueOf(hashMap.get("amountOfItem"))));
@@ -122,23 +124,23 @@ public class feedActivity extends AppCompatActivity {
     }
 
     public void removeButton(View view) {
-
         FirebaseUser user = mAuth.getCurrentUser();
         String userID = user.getUid();
         ListView list = findViewById(R.id.listView);
         for (int i = 0; i < list.getChildCount(); i++) {
             View view2 = list.getChildAt(i);
             CheckBox cv = view2.findViewById(R.id.list_item);
-            if(cv.isChecked())
+            if (cv.isChecked())
                 delete.add(cv.getText().toString());
         }
-        for (String s: delete)
+        for (String s : delete)
             for (int i = 0; i < counts.size(); i++)
                 if (listItemFromFB.get(i) != null && listItemFromFB.get(i).equals(s))
                     temp.add(counts.get(i).toString());
-        for (int i=0;i<delete.size();i++)
-            myRef.child(delete.get(i) + userID).child("removedCount").setValue(temp.get(i));
-        Intent intent =  new Intent(getApplicationContext(), feedActivity.class);
+
+        for (int i = 0; i < delete.size(); i++)
+            myRef.child(delete.get(i) + userID).child("removed " + getCurrentDate()).setValue(temp.get(i));
+        Intent intent = new Intent(getApplicationContext(), feedActivity.class);
         startActivity(intent);
     }
 
@@ -147,4 +149,15 @@ public class feedActivity extends AppCompatActivity {
         intent.putExtra("s", "activity");
         startActivity(intent);
     }
+
+
+    public String getCurrentDate() {
+        Date date = new Date();
+        String dateTime = date.toString().substring(0, date.toString().indexOf("GMT")) +
+                date.toString().substring(date.toString().indexOf("GMT") + 10);
+        dateTime = dateTime.replace(" ", "_");
+
+        return dateTime;
+    }
+
 }

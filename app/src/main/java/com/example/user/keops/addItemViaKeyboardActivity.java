@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -19,6 +20,7 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
 import java.util.ArrayList;
+import java.util.Date;
 
 public class addItemViaKeyboardActivity extends AppCompatActivity {
 
@@ -96,6 +98,7 @@ public class addItemViaKeyboardActivity extends AppCompatActivity {
             myRef.child(databaseListName).child("userEmail").setValue(mail);
             myRef.child(databaseListName).child("item").setValue(itemName);
             myRef.child(databaseListName).child("amountOfItem").setValue(amountOfItem.getText().toString());
+            myRef.child(databaseListName).child("add " + getCurrentDate()).setValue( amountOfItem.getText().toString());
 
             Toast.makeText(getApplicationContext(), amountOfItem.getText().toString() + " " +
                     itemName + "  Başarıyla eklendi ...", Toast.LENGTH_LONG).show();
@@ -111,6 +114,15 @@ public class addItemViaKeyboardActivity extends AppCompatActivity {
         }
     }
 
+    public String getCurrentDate() {
+        Date date = new Date();
+        String dateTime = date.toString().substring(0, date.toString().indexOf("GMT")) +
+                date.toString().substring(date.toString().indexOf("GMT") + 10);
+        dateTime = dateTime.replace(" ", "_");
+
+        return dateTime;
+    }
+
     public void onBackPressed() {
         Bundle extras = getIntent().getExtras();
         if (extras != null && extras.getString("s").equals("activity")) {
@@ -120,5 +132,4 @@ public class addItemViaKeyboardActivity extends AppCompatActivity {
             super.onBackPressed();
         }
     }
-
 }

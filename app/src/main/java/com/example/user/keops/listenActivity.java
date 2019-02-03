@@ -9,6 +9,7 @@ import android.provider.Settings;
 import android.speech.RecognitionListener;
 import android.speech.RecognizerIntent;
 import android.speech.SpeechRecognizer;
+import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
@@ -20,15 +21,22 @@ import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.EditText;
+import android.widget.ListView;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 
 import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
 import java.util.Locale;
 import java.util.Timer;
 import java.util.TimerTask;
@@ -40,6 +48,12 @@ public class listenActivity extends AppCompatActivity {
     DatabaseReference myRef;
     private FirebaseAuth mAuth;
     String text="";
+    postClass adapter;
+    ArrayList<String> delete;
+    ArrayList<Integer> counts;
+    ArrayList<String> listItemFromFB;
+    ArrayList<HashMap<String, String>> hashMapsOfItems = new ArrayList<>();
+    ArrayList<String> temp;
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater menuinflater = getMenuInflater();
@@ -80,6 +94,8 @@ public class listenActivity extends AppCompatActivity {
         final SpeechRecognizer mSpeechRecognizer = SpeechRecognizer.createSpeechRecognizer(this);
 
         final Button addItem=(Button) findViewById(R.id.buttonAdder);
+
+        final Button deleteItem=(Button) findViewById(R.id.removeButton);
 
         final Intent mSpeechRecognizerIntent = new Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH);
         mSpeechRecognizerIntent.putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL,
@@ -137,7 +153,7 @@ public class listenActivity extends AppCompatActivity {
                             if(text.matches("[a-zA-Z]+")){
                                 String databaseListName = text.toLowerCase() + user.getUid();
                                 myRef.child(databaseListName).child("userEmail").setValue(mail);
-                                myRef.child(databaseListName).child("item").setValue(text);
+                                myRef.child(databaseListName).child("item "+getCurrentDate()).setValue(text);
                                 myRef.child(databaseListName).child("amountOfItem").setValue("1");
                                 AlertDialog.Builder theBuild = new AlertDialog.Builder(listenActivity.this);
                                 theBuild.setMessage(text+" eklendi");
@@ -159,7 +175,7 @@ public class listenActivity extends AppCompatActivity {
                             else{
                                 String databaseListName = text.substring(text.indexOf(" ")+1).toLowerCase() + user.getUid();
                                 myRef.child(databaseListName).child("userEmail").setValue(mail);
-                                myRef.child(databaseListName).child("item").setValue(text.substring(text.indexOf(" ")+1));
+                                myRef.child(databaseListName).child("item "+getCurrentDate()).setValue(text.substring(text.indexOf(" ")+1));
                                 myRef.child(databaseListName).child("amountOfItem").setValue(text.substring(0,text.indexOf(" ")));
                                 AlertDialog.Builder theBuild = new AlertDialog.Builder(listenActivity.this);
                                 theBuild.setMessage(text+" eklendi");
@@ -182,6 +198,52 @@ public class listenActivity extends AppCompatActivity {
 
                         }
                     });
+
+                    deleteItem.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+                            getDataFromFirebase();
+                            FirebaseUser user = mAuth.getCurrentUser();
+                            String mail = user.getEmail();
+                            String userEmail = user.getEmail();
+                            String userID = user.getUid();
+                            ListView list = findViewById(R.id.listView);
+
+
+
+                                for (int i = 0; i < hashMapsOfItems.size(); i++)
+                                    if (hashMapsOfItems.get(i).get("item") != null && hashMapsOfItems.get(i).get("item").equals(text) &&
+                                            hashMapsOfItems.get(i).get("userEmail") != null && hashMapsOfItems.get(i).get("userEmail").equals(userEmail)) {
+                                        int newValue = Integer.parseInt(hashMapsOfItems.get(i).get("amountOfItem")) - 1;
+
+                                        myRef.child(text + userID).child("removed " + getCurrentDate()).setValue("" + 1);
+                                        myRef.child(text + userID).child("amountOfItem").setValue("" + newValue);
+                                    }
+
+
+                            AlertDialog.Builder theBuild = new AlertDialog.Builder(listenActivity.this);
+                            theBuild.setMessage(text+" silindi");
+                            theBuild.show();
+
+                            int timeout = 3000;
+
+                            Timer timer = new Timer();
+                            timer.schedule(new TimerTask() {
+
+                                @Override
+                                public void run() {
+                                    finish();
+                                    Intent feedPage = new Intent(listenActivity.this, feedActivity.class);
+                                    startActivity(feedPage);
+                                }
+                            }, timeout);
+
+
+
+                        }
+                    });
+
+
 
                 }
             }
@@ -225,5 +287,60 @@ public class listenActivity extends AppCompatActivity {
                 ActivityCompat.requestPermissions(this,new String[]{Manifest.permission.RECORD_AUDIO},1);
             }
         }
+    }
+
+    public String getCurrentDate() {
+        Date date = new Date();
+        String dateTime = date.toString().substring(0, date.toString().indexOf("GMT")) +
+                date.toString().substring(date.toString().indexOf("GMT") + 10);
+        dateTime = dateTime.replace(" ", "_");
+
+        return dateTime;
+    }
+
+    public void getDataFromFirebase() {
+        myRef.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                for (DataSnapshot ds : dataSnapshot.getChildren()) {
+                    HashMap<String, String> hashMap = (HashMap<String, String>) ds.getValue();
+
+                    hashMapsOfItems.add(hashMap);
+
+                    if (mAuth.getCurrentUser().getEmail().equals(hashMap.get("userEmail"))) {
+                        if (hashMap.get("amountOfItem") != null) {
+                            if (hashMap.get("removedCount") == null) {
+                                listItemFromFB.add(hashMap.get("item"));
+                                counts.add(Integer.parseInt(String.valueOf(hashMap.get("amountOfItem"))));
+                            } else {
+                                if (!(hashMap.get("amountOfItem").equals(hashMap.get("removedCount")))) {
+                                    listItemFromFB.add(hashMap.get("item"));
+                                    counts.add(Integer.parseInt(String.valueOf(hashMap.get("amountOfItem"))));
+                                }
+                            }
+                        }
+                    }
+                }
+
+                for (int i = 0; i < counts.size(); i++) {
+                    for (int j = 1; j < (counts.size() - i); j++) {
+                        if (counts.get(j - 1) < counts.get(j)) {
+                            int temp = counts.get(j - 1);
+                            counts.set(j - 1, counts.get(j));
+                            counts.set(j, temp);
+                            String temp2 = listItemFromFB.get(j - 1);
+                            listItemFromFB.set(j - 1, listItemFromFB.get(j));
+                            listItemFromFB.set(j, temp2);
+                        }
+                    }
+                }
+                adapter.notifyDataSetChanged();
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
     }
 }

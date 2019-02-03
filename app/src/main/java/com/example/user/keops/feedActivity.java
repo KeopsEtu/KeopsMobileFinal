@@ -22,7 +22,9 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
 import java.io.Console;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 
@@ -167,10 +169,11 @@ public class feedActivity extends AppCompatActivity {
 
 
     public String getCurrentDate() {
-        Date date = new Date();
-        String dateTime = date.toString().substring(0, date.toString().indexOf("GMT")) +
-                date.toString().substring(date.toString().indexOf("GMT") + 10);
-        dateTime = dateTime.replace(" ", "_");
+        Date c = Calendar.getInstance().getTime();
+        System.out.println("Current time => " + c);
+
+        SimpleDateFormat df = new SimpleDateFormat("dd-mm-yyyy-HH:mm");
+        String dateTime = df.format(c);
 
         return dateTime;
     }

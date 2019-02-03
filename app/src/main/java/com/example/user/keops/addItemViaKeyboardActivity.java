@@ -19,7 +19,9 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 
 public class addItemViaKeyboardActivity extends AppCompatActivity {
@@ -98,7 +100,7 @@ public class addItemViaKeyboardActivity extends AppCompatActivity {
             myRef.child(databaseListName).child("userEmail").setValue(mail);
             myRef.child(databaseListName).child("item").setValue(itemName);
             myRef.child(databaseListName).child("amountOfItem").setValue(amountOfItem.getText().toString());
-            myRef.child(databaseListName).child("add " + getCurrentDate()).setValue( amountOfItem.getText().toString());
+            myRef.child(databaseListName).child("add " + getCurrentDate()).setValue(amountOfItem.getText().toString());
 
             Toast.makeText(getApplicationContext(), amountOfItem.getText().toString() + " " +
                     itemName + "  Başarıyla eklendi ...", Toast.LENGTH_LONG).show();
@@ -115,10 +117,11 @@ public class addItemViaKeyboardActivity extends AppCompatActivity {
     }
 
     public String getCurrentDate() {
-        Date date = new Date();
-        String dateTime = date.toString().substring(0, date.toString().indexOf("GMT")) +
-                date.toString().substring(date.toString().indexOf("GMT") + 10);
-        dateTime = dateTime.replace(" ", "_");
+        Date c = Calendar.getInstance().getTime();
+        System.out.println("Current time => " + c);
+
+        SimpleDateFormat df = new SimpleDateFormat("dd-mm-yyyy-HH:mm");
+        String dateTime = df.format(c);
 
         return dateTime;
     }

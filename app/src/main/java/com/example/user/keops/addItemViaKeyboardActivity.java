@@ -117,7 +117,7 @@ public class addItemViaKeyboardActivity extends AppCompatActivity {
     public String getCurrentDate() {
         Date date = new Date();
         String dateTime = date.toString().substring(0, date.toString().indexOf("GMT")) +
-                date.toString().substring(date.toString().indexOf("GMT") + 10);
+                date.toString().substring(date.toString().indexOf("GMT"));
         dateTime = dateTime.replace(" ", "_");
 
         return dateTime;

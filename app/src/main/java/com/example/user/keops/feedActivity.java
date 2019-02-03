@@ -92,14 +92,9 @@ public class feedActivity extends AppCompatActivity {
 
                     if (mAuth.getCurrentUser().getEmail().equals(hashMap.get("userEmail"))) {
                         if (hashMap.get("amountOfItem") != null) {
-                            if (hashMap.get("removedCount") == null) {
+                            if (Integer.parseInt(hashMap.get("amountOfItem")) > 0) {
                                 listItemFromFB.add(hashMap.get("item"));
                                 counts.add(Integer.parseInt(String.valueOf(hashMap.get("amountOfItem"))));
-                            } else {
-                                if (!(hashMap.get("amountOfItem").equals(hashMap.get("removedCount")))) {
-                                    listItemFromFB.add(hashMap.get("item"));
-                                    counts.add(Integer.parseInt(String.valueOf(hashMap.get("amountOfItem"))));
-                                }
                             }
                         }
                     }
@@ -145,7 +140,7 @@ public class feedActivity extends AppCompatActivity {
                 if (listItemFromFB.get(i) != null && listItemFromFB.get(i).equals(s))
                     temp.add(counts.get(i).toString());
 
-        for (int s = 0; s < delete.size(); s++)
+        for (int s = 0; s < delete.size(); s++) {
             for (int i = 0; i < hashMapsOfItems.size(); i++)
                 if (hashMapsOfItems.get(i).get("item") != null && hashMapsOfItems.get(i).get("item").equals(delete.get(s)) &&
                         hashMapsOfItems.get(i).get("userEmail") != null && hashMapsOfItems.get(i).get("userEmail").equals(userEmail)) {
@@ -154,6 +149,7 @@ public class feedActivity extends AppCompatActivity {
                     myRef.child(delete.get(s) + userID).child("removed " + getCurrentDate()).setValue("" + 1);
                     myRef.child(delete.get(s) + userID).child("amountOfItem").setValue("" + newValue);
                 }
+        }
 
         Intent intent = new Intent(getApplicationContext(), feedActivity.class);
         startActivity(intent);
@@ -169,7 +165,7 @@ public class feedActivity extends AppCompatActivity {
     public String getCurrentDate() {
         Date date = new Date();
         String dateTime = date.toString().substring(0, date.toString().indexOf("GMT")) +
-                date.toString().substring(date.toString().indexOf("GMT") + 10);
+                date.toString().substring(date.toString().indexOf("GMT") );
         dateTime = dateTime.replace(" ", "_");
 
         return dateTime;

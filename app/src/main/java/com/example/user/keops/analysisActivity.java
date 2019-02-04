@@ -101,7 +101,7 @@ public class analysisActivity extends AppCompatActivity {
                                     deletes.add(Integer.parseInt(hashMap.get(key)));
                                     Date date1 = null;
                                     try {
-                                        date1 = new SimpleDateFormat("MM-dd-yyyy").parse(date);
+                                        date1 = new SimpleDateFormat("dd-MM-yyyy").parse(date);
                                     } catch (ParseException e) { }
                                     dates.add(date1);
                                 } else if(key.startsWith("added")) {
@@ -109,7 +109,7 @@ public class analysisActivity extends AppCompatActivity {
                                     added.add(Integer.parseInt(hashMap.get(key)));
                                     Date date1 = null;
                                     try {
-                                        date1 = new SimpleDateFormat("MM-dd-yyyy").parse(date);
+                                        date1 = new SimpleDateFormat("dd-MM-yyyy").parse(date);
                                     } catch (ParseException e) { }
                                     dates2.add(date1);
                                 }
@@ -136,7 +136,6 @@ public class analysisActivity extends AppCompatActivity {
 
                     }
                 }
-                dates.get(0).compareTo(dates.get(1));
                 while (dates.size()!=0) {
                     series.appendData(new DataPoint(dates.get(0), deletes.get(0)), true, 5);
                     dates.remove(0);
@@ -150,7 +149,7 @@ public class analysisActivity extends AppCompatActivity {
                     added.remove(0);
                 }
                 graph.addSeries(series2);
-                graph.getGridLabelRenderer().setNumVerticalLabels(5);
+                graph.getGridLabelRenderer().setNumVerticalLabels(3);
                 graph.getGridLabelRenderer().setLabelFormatter(new DateAsXAxisLabelFormatter(analysisActivity.this));
             }
             @Override public void onCancelled(DatabaseError error) { }

@@ -172,7 +172,7 @@ public class feedActivity extends AppCompatActivity {
         Date c = Calendar.getInstance().getTime();
         System.out.println("Current time => " + c);
 
-        SimpleDateFormat df = new SimpleDateFormat("dd-mm-yyyy-HH:mm");
+        SimpleDateFormat df = new SimpleDateFormat("dd-MM-yyyy-HH:mm");
         String dateTime = df.format(c);
 
         return dateTime;

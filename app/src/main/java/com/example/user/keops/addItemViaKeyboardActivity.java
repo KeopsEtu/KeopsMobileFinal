@@ -100,7 +100,7 @@ public class addItemViaKeyboardActivity extends AppCompatActivity {
             myRef.child(databaseListName).child("userEmail").setValue(mail);
             myRef.child(databaseListName).child("item").setValue(itemName);
             myRef.child(databaseListName).child("amountOfItem").setValue(amountOfItem.getText().toString());
-            myRef.child(databaseListName).child("add " + getCurrentDate()).setValue(amountOfItem.getText().toString());
+            myRef.child(databaseListName).child("added " + getCurrentDate()).setValue(amountOfItem.getText().toString());
 
             Toast.makeText(getApplicationContext(), amountOfItem.getText().toString() + " " +
                     itemName + "  Başarıyla eklendi ...", Toast.LENGTH_LONG).show();
@@ -120,7 +120,7 @@ public class addItemViaKeyboardActivity extends AppCompatActivity {
         Date c = Calendar.getInstance().getTime();
         System.out.println("Current time => " + c);
 
-        SimpleDateFormat df = new SimpleDateFormat("dd-mm-yyyy-HH:mm");
+        SimpleDateFormat df = new SimpleDateFormat("dd-MM-yyyy-HH:mm");
         String dateTime = df.format(c);
 
         return dateTime;

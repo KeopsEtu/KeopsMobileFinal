@@ -26,7 +26,6 @@
         android:layout_marginStart="64dp"
         android:layout_marginBottom="8dp"
         android:background="@color/colorPrimary"
-        android:shadowRadius="10dp"
         android:onClick="removeButton"
         android:text="Remove"
         app:layout_constraintBottom_toBottomOf="parent"

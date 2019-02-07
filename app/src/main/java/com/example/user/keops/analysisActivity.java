@@ -8,6 +8,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.widget.TextView;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
@@ -34,6 +35,8 @@ public class analysisActivity extends AppCompatActivity {
     ArrayList<Integer> deletes;
     ArrayList<Date> dates2;
     ArrayList<Integer> added;
+    ArrayList<Long> difadded;
+    ArrayList<Long> difdeleted;
     FirebaseDatabase database;
     DatabaseReference myRef;
     private FirebaseAuth mAuth;
@@ -83,6 +86,8 @@ public class analysisActivity extends AppCompatActivity {
         series2 = new LineGraphSeries<>();
         deletes = new ArrayList<>();
         added = new ArrayList<>();
+        difdeleted = new ArrayList<>();
+        difadded = new ArrayList<>();
         graph = findViewById(R.id.graph);
 
         Bundle extras = getIntent().getExtras();
@@ -122,20 +127,42 @@ public class analysisActivity extends AppCompatActivity {
                             Date temp = dates.get(j-1);
                             dates.set(j-1, dates.get(j));
                             dates.set(j,temp);
+                            int temp2 = deletes.get(j-1);
+                            deletes.set(j-1, deletes.get(j));
+                            deletes.set(j,temp2);
                         }
 
                     }
                 }
+                float temp3 = 0;
+                for(int i=1; i < dates.size(); i++) {
+                    difdeleted.add((dates.get(i).getTime() - dates.get(i-1).getTime()) / 3600000);
+                    temp3 = temp3 + (dates.get(i).getTime() - dates.get(i-1).getTime()) / 3600000 / (float)(deletes.get(i));
+                }
+                int temp6 = (int)(temp3/(dates.size()-1));
+                TextView t2 = findViewById(R.id.tw2);
+                t2.setText("Bu ürünü tüketme sıklığınız " + temp6 + " saatde bir");
                 for(int i=0; i < dates2.size(); i++){
                     for(int j=1; j < (dates2.size()-i); j++){
                         if(dates2.get(j-1).compareTo(dates2.get(j))>= 0){
                             Date temp = dates2.get(j-1);
                             dates2.set(j-1, dates2.get(j));
                             dates2.set(j,temp);
+                            int temp2 = added.get(j-1);
+                            added.set(j-1, added.get(j));
+                            added.set(j,temp2);
                         }
 
                     }
                 }
+                float temp4 = 0;
+                for(int i=1; i < dates2.size(); i++) {
+                    difadded.add((dates2.get(i).getTime() - dates2.get(i-1).getTime()) / 3600000);
+                    temp4 = temp4 + (dates2.get(i).getTime() - dates2.get(i-1).getTime()) / 3600000 / (float)(added.get(i));
+                }
+                int temp5 = (int)(temp4/(dates2.size()-1));
+                TextView t1 = findViewById(R.id.tw1);
+                t1.setText("Alışverişte bu ürünü alma sıklığınız " + temp5 + " saatde bir");
                 while (dates.size()!=0) {
                     series.appendData(new DataPoint(dates.get(0), deletes.get(0)), true, 5);
                     dates.remove(0);

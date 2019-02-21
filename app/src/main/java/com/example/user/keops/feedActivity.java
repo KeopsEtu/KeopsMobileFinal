@@ -8,16 +8,19 @@ import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.ListView;
 import android.widget.SearchView;
 import android.widget.TextView;
 
+import com.daimajia.swipe.SwipeLayout;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
@@ -45,6 +48,15 @@ public class feedActivity extends AppCompatActivity {
     ArrayList<Integer> counts;
     private FirebaseAuth mAuth;
     ArrayList<HashMap<String, String>> hashMapsOfItems = new ArrayList<>();
+
+
+    //private ListView listView;
+    private ArrayAdapter<String> adapter2;
+    private ArrayList<String> friendsList;
+    private TextView totalClassmates;
+    private SwipeLayout swipeLayout;
+
+    private final static String TAG = MainActivity.class.getSimpleName();
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -93,6 +105,76 @@ public class feedActivity extends AppCompatActivity {
         delete = new ArrayList<>();
         temp = new ArrayList<>();
         getDataFromFirebase();
+
+        friendsList = new ArrayList<>();
+        getDataFromFile();
+        setListViewHeader();
+        setListViewAdapter();
+    }
+
+    private void getDataFromFile() {
+
+    }
+
+    private void setListViewHeader() {
+        LayoutInflater inflater = getLayoutInflater();
+        View header = inflater.inflate(R.layout.header_listview, listView, false);
+        totalClassmates = (TextView) header.findViewById(R.id.total);
+        swipeLayout = (SwipeLayout) header.findViewById(R.id.swipe_layout);
+        setSwipeViewFeatures();
+        listView.addHeaderView(header);
+    }
+
+    private void setSwipeViewFeatures() {
+        //set show mode.
+        swipeLayout.setShowMode(SwipeLayout.ShowMode.PullOut);
+
+        //add drag edge.(If the BottomView has 'layout_gravity' attribute, this line is unnecessary)
+        swipeLayout.addDrag(SwipeLayout.DragEdge.Left, findViewById(R.id.bottom_wrapper));
+
+        swipeLayout.addSwipeListener(new SwipeLayout.SwipeListener() {
+            @Override
+            public void onClose(SwipeLayout layout) {
+                Log.i(TAG, "onClose");
+            }
+
+            @Override
+            public void onUpdate(SwipeLayout layout, int leftOffset, int topOffset) {
+                Log.i(TAG, "on swiping");
+            }
+
+            @Override
+            public void onStartOpen(SwipeLayout layout) {
+                Log.i(TAG, "on start open");
+            }
+
+            @Override
+            public void onOpen(SwipeLayout layout) {
+                Log.i(TAG, "the BottomView totally show");
+            }
+
+            @Override
+            public void onStartClose(SwipeLayout layout) {
+                Log.i(TAG, "the BottomView totally close");
+            }
+
+            @Override
+            public void onHandRelease(SwipeLayout layout, float xvel, float yvel) {
+                //when user's hand released.
+            }
+        });
+    }
+
+    private void setListViewAdapter() {
+        adapter2 = new ListViewAdapter(this, R.layout.item_listview, friendsList);
+        listView.setAdapter(adapter2);
+
+        totalClassmates.setText("(" + 343 + ")");
+    }
+
+    public void updateAdapter() {
+        adapter2.notifyDataSetChanged(); //update adapter
+        totalClassmates.setText("(" + 3434 + ")"); //update total friends in list
     }
 
     @Override
@@ -108,7 +190,7 @@ public class feedActivity extends AppCompatActivity {
             handler.postDelayed(new Runnable() {
                 @Override
                 public void run() {
-                    if(adapter!= null)
+                    if (adapter != null)
                         adapter.getFilter().filter(query);
                 }
             }, 10);

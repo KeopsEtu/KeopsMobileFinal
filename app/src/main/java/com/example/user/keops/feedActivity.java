@@ -33,6 +33,7 @@ import java.io.Console;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
 
@@ -49,10 +50,8 @@ public class feedActivity extends AppCompatActivity {
     private FirebaseAuth mAuth;
     ArrayList<HashMap<String, String>> hashMapsOfItems = new ArrayList<>();
 
-
     //private ListView listView;
     private ArrayAdapter<String> adapter2;
-    private ArrayList<String> friendsList;
     private TextView totalClassmates;
     private SwipeLayout swipeLayout;
 
@@ -98,18 +97,22 @@ public class feedActivity extends AppCompatActivity {
         myRef = database.getReference();
         listView = findViewById(R.id.listView);
         listItemFromFB = new ArrayList<>();
-        adapter = new postClass(listItemFromFB, listItemFromFB, this);
-        listView.setAdapter(adapter);
+        //adapter = new postClass(listItemFromFB, listItemFromFB, this);
+        //listView.setAdapter(adapter);
         mAuth = FirebaseAuth.getInstance();
         counts = new ArrayList<>();
         delete = new ArrayList<>();
         temp = new ArrayList<>();
         getDataFromFirebase();
 
-        friendsList = new ArrayList<>();
+        System.out.println("fbLength: " + listItemFromFB.size());
+        for (String e : listItemFromFB)
+            System.out.println("selam13: " + e);
+
         getDataFromFile();
         setListViewHeader();
         setListViewAdapter();
+
     }
 
     private void getDataFromFile() {
@@ -166,20 +169,20 @@ public class feedActivity extends AppCompatActivity {
     }
 
     private void setListViewAdapter() {
-        adapter2 = new ListViewAdapter(this, R.layout.item_listview, friendsList);
+        adapter2 = new ListViewAdapter(this, R.layout.item_listview, listItemFromFB);
         listView.setAdapter(adapter2);
 
-        totalClassmates.setText("(" + 343 + ")");
+        totalClassmates.setText("(" + listItemFromFB.size() + ")");
     }
 
     public void updateAdapter() {
         adapter2.notifyDataSetChanged(); //update adapter
-        totalClassmates.setText("(" + 3434 + ")"); //update total friends in list
+        totalClassmates.setText("(" + listItemFromFB.size() + ")"); //update total friends in list
     }
 
     @Override
     protected void onNewIntent(Intent intent) {
-        handleIntent(intent);
+        //handleIntent(intent);
     }
 
     private void handleIntent(Intent intent) {
@@ -234,7 +237,12 @@ public class feedActivity extends AppCompatActivity {
                         }
                     }
                 }
-                adapter.notifyDataSetChanged();
+
+                //for (String e: listItemFromFB)
+                //  System.out.println("selam1: " + e);
+
+                 adapter2.notifyDataSetChanged();
+                totalClassmates.setText("(" + listItemFromFB.size() + ")"); //update total friends in list
             }
 
             @Override

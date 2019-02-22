@@ -3,10 +3,10 @@ package com.example.user.keops;
 import android.app.SearchManager;
 import android.content.Context;
 import android.content.Intent;
+import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -14,7 +14,6 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ArrayAdapter;
-import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.ListView;
 import android.widget.SearchView;
@@ -29,18 +28,15 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
-import java.io.Console;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
 
 public class feedActivity extends AppCompatActivity {
 
     ListView listView;
-    postClass adapter;
     FirebaseDatabase database;
     DatabaseReference myRef;
     ArrayList<String> listItemFromFB;
@@ -50,8 +46,7 @@ public class feedActivity extends AppCompatActivity {
     private FirebaseAuth mAuth;
     ArrayList<HashMap<String, String>> hashMapsOfItems = new ArrayList<>();
 
-    //private ListView listView;
-    private ArrayAdapter<String> adapter2;
+    private ArrayAdapter<String> existingListAdapter;
     private TextView totalClassmates;
     private SwipeLayout swipeLayout;
 
@@ -97,25 +92,14 @@ public class feedActivity extends AppCompatActivity {
         myRef = database.getReference();
         listView = findViewById(R.id.listView);
         listItemFromFB = new ArrayList<>();
-        //adapter = new postClass(listItemFromFB, listItemFromFB, this);
-        //listView.setAdapter(adapter);
         mAuth = FirebaseAuth.getInstance();
         counts = new ArrayList<>();
         delete = new ArrayList<>();
         temp = new ArrayList<>();
+
         getDataFromFirebase();
-
-        System.out.println("fbLength: " + listItemFromFB.size());
-        for (String e : listItemFromFB)
-            System.out.println("selam13: " + e);
-
-        getDataFromFile();
         setListViewHeader();
         setListViewAdapter();
-
-    }
-
-    private void getDataFromFile() {
 
     }
 
@@ -169,20 +153,20 @@ public class feedActivity extends AppCompatActivity {
     }
 
     private void setListViewAdapter() {
-        adapter2 = new ListViewAdapter(this, R.layout.item_listview, listItemFromFB);
-        listView.setAdapter(adapter2);
+        existingListAdapter = new ListViewAdapter(this, R.layout.item_listview, listItemFromFB);
+        listView.setAdapter(existingListAdapter);
 
         totalClassmates.setText("(" + listItemFromFB.size() + ")");
     }
 
     public void updateAdapter() {
-        adapter2.notifyDataSetChanged(); //update adapter
+        existingListAdapter.notifyDataSetChanged(); //update adapter
         totalClassmates.setText("(" + listItemFromFB.size() + ")"); //update total friends in list
     }
 
     @Override
     protected void onNewIntent(Intent intent) {
-        //handleIntent(intent);
+        handleIntent(intent);
     }
 
     private void handleIntent(Intent intent) {
@@ -193,8 +177,8 @@ public class feedActivity extends AppCompatActivity {
             handler.postDelayed(new Runnable() {
                 @Override
                 public void run() {
-                    if (adapter != null)
-                        adapter.getFilter().filter(query);
+                    if (existingListAdapter != null)
+                        existingListAdapter.getFilter().filter(query);
                 }
             }, 10);
 
@@ -241,7 +225,7 @@ public class feedActivity extends AppCompatActivity {
                 //for (String e: listItemFromFB)
                 //  System.out.println("selam1: " + e);
 
-                 adapter2.notifyDataSetChanged();
+                existingListAdapter.notifyDataSetChanged();
                 totalClassmates.setText("(" + listItemFromFB.size() + ")"); //update total friends in list
             }
 

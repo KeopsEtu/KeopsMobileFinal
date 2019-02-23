@@ -161,7 +161,7 @@ public class feedActivity extends AppCompatActivity {
 
     public void updateAdapter() {
         existingListAdapter.notifyDataSetChanged(); //update adapter
-        totalClassmates.setText("(" + listItemFromFB.size() + ")"); //update total friends in list
+        totalClassmates.setText("(" + listItemFromFB.size() + ")"); //update total items in list
     }
 
     @Override
@@ -222,11 +222,8 @@ public class feedActivity extends AppCompatActivity {
                     }
                 }
 
-                //for (String e: listItemFromFB)
-                //  System.out.println("selam1: " + e);
-
                 existingListAdapter.notifyDataSetChanged();
-                totalClassmates.setText("(" + listItemFromFB.size() + ")"); //update total friends in list
+                totalClassmates.setText("(" + listItemFromFB.size() + ")"); //update total items in list
             }
 
             @Override

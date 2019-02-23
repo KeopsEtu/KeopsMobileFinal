@@ -18,13 +18,13 @@ import java.util.List;
 public class ListViewAdapter extends ArrayAdapter<String> {
 
     private feedActivity activity;
-    private List<String> friends;
+    private List<String> items;
 
 
     public ListViewAdapter(feedActivity context, int resource, List<String> objects) {
         super(context, resource, objects);
         this.activity = context;
-        this.friends = objects;
+        this.items = objects;
     }
 
     @Override
@@ -77,7 +77,7 @@ public class ListViewAdapter extends ArrayAdapter<String> {
         LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(
                 LinearLayout.LayoutParams.MATCH_PARENT,
                 LinearLayout.LayoutParams.MATCH_PARENT);
-        input.setText(friends.get(position));
+        input.setText(items.get(position));
         input.setLayoutParams(lp);
         alertDialogBuilder.setView(input);
 
@@ -87,7 +87,7 @@ public class ListViewAdapter extends ArrayAdapter<String> {
                         new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog, int id) {
                                 // get user input and set it to result edit text
-                                friends.set(position, input.getText().toString().trim());
+                                items.set(position, input.getText().toString().trim());
 
                                 //notify data set changed
                                 activity.updateAdapter();
@@ -110,7 +110,7 @@ public class ListViewAdapter extends ArrayAdapter<String> {
         return new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                friends.remove(position);
+                items.remove(position);
                 holder.swipeLayout.close();
                 activity.updateAdapter();
             }

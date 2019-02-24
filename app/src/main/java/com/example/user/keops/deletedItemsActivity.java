@@ -14,15 +14,12 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ArrayAdapter;
-import android.widget.Button;
-import android.widget.CheckBox;
 import android.widget.ListView;
 import android.widget.SearchView;
 import android.widget.TextView;
 
 import com.daimajia.swipe.SwipeLayout;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -35,10 +32,9 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 
-public class feedActivity extends AppCompatActivity {
+public class deletedItemsActivity extends AppCompatActivity {
 
-    Button deletedItemsButton;
-    ListView listView;
+    ListView deletedItemsListView;
     FirebaseDatabase database;
     DatabaseReference myRef;
     ArrayList<String> listItemFromFB;
@@ -87,18 +83,17 @@ public class feedActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_feed);
+        setContentView(R.layout.activity_deleted_items);
         handleIntent(getIntent());
 
         database = FirebaseDatabase.getInstance();
         myRef = database.getReference();
-        listView = findViewById(R.id.listView);
+        deletedItemsListView = findViewById(R.id.deletedItemsListView);
         listItemFromFB = new ArrayList<>();
         mAuth = FirebaseAuth.getInstance();
         counts = new ArrayList<>();
         delete = new ArrayList<>();
         temp = new ArrayList<>();
-        deletedItemsButton = findViewById(R.id.deletedItemsButton);
 
         getDataFromFirebase();
         setListViewHeader();
@@ -106,18 +101,13 @@ public class feedActivity extends AppCompatActivity {
 
     }
 
-    public void deletedItems(View view) {
-        Intent intent = new Intent(getApplicationContext(), deletedItemsActivity.class);
-        startActivity(intent);
-    }
-
     private void setListViewHeader() {
         LayoutInflater inflater = getLayoutInflater();
-        View header = inflater.inflate(R.layout.header_listview, listView, false);
+        View header = inflater.inflate(R.layout.header_listview, deletedItemsListView, false);
         totalClassmates = (TextView) header.findViewById(R.id.total);
         swipeLayout = (SwipeLayout) header.findViewById(R.id.swipe_layout);
         setSwipeViewFeatures();
-        listView.addHeaderView(header);
+        deletedItemsListView.addHeaderView(header);
     }
 
     private void setSwipeViewFeatures() {
@@ -161,8 +151,8 @@ public class feedActivity extends AppCompatActivity {
     }
 
     private void setListViewAdapter() {
-        existingListAdapter = new ListViewAdapter(this, R.layout.item_listview, listItemFromFB);
-        listView.setAdapter(existingListAdapter);
+        existingListAdapter = new DeletedListViewAdapter(this, R.layout.item_listview, listItemFromFB);
+        deletedItemsListView.setAdapter(existingListAdapter);
 
         totalClassmates.setText("(" + listItemFromFB.size() + ")");
     }
@@ -240,16 +230,5 @@ public class feedActivity extends AppCompatActivity {
             }
         });
     }
-
-
-    public String getCurrentDate() {
-        Date c = Calendar.getInstance().getTime();
-        System.out.println("Current time => " + c);
-
-        SimpleDateFormat df = new SimpleDateFormat("dd-MM-yyyy-HH:mm");
-        String dateTime = df.format(c);
-
-        return dateTime;
-    }
-
+    
 }

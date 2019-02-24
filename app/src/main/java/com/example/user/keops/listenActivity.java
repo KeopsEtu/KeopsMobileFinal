@@ -153,8 +153,9 @@ public class listenActivity extends AppCompatActivity {
                             if(text.matches("[a-zA-Z]+")){
                                 String databaseListName = text.toLowerCase() + user.getUid();
                                 myRef.child(databaseListName).child("userEmail").setValue(mail);
-                                myRef.child(databaseListName).child("item "+getCurrentDate()).setValue(text);
-                                myRef.child(databaseListName).child("amountOfItem").setValue("1");
+                                myRef.child(databaseListName).child("item").setValue(text);
+                                myRef.child(databaseListName).child("amountOfItem").setValue(1);
+                                myRef.child(databaseListName).child("added " + getCurrentDate()).setValue(1);
                                 AlertDialog.Builder theBuild = new AlertDialog.Builder(listenActivity.this);
                                 theBuild.setMessage(text+" eklendi");
                                 theBuild.show();
@@ -175,8 +176,9 @@ public class listenActivity extends AppCompatActivity {
                             else{
                                 String databaseListName = text.substring(text.indexOf(" ")+1).toLowerCase() + user.getUid();
                                 myRef.child(databaseListName).child("userEmail").setValue(mail);
-                                myRef.child(databaseListName).child("item "+getCurrentDate()).setValue(text.substring(text.indexOf(" ")+1));
+                                myRef.child(databaseListName).child("item").setValue(text.substring(text.indexOf(" ")+1));
                                 myRef.child(databaseListName).child("amountOfItem").setValue(text.substring(0,text.indexOf(" ")));
+                                myRef.child(databaseListName).child("added " + getCurrentDate()).setValue(text.substring(0,text.indexOf(" ")));
                                 AlertDialog.Builder theBuild = new AlertDialog.Builder(listenActivity.this);
                                 theBuild.setMessage(text+" eklendi");
                                 theBuild.show();

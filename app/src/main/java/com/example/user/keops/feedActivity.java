@@ -1,17 +1,27 @@
 package com.example.user.keops;
 
+import android.Manifest;
 import android.app.SearchManager;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
+import android.speech.RecognitionListener;
+import android.speech.RecognizerIntent;
+import android.speech.SpeechRecognizer;
 import android.support.annotation.NonNull;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.ArrayAdapter;
@@ -37,6 +47,9 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.Locale;
+import java.util.Timer;
+import java.util.TimerTask;
 
 public class feedActivity extends AppCompatActivity {
 
@@ -248,8 +261,8 @@ public class feedActivity extends AppCompatActivity {
         String mail = user.getEmail();
         String userID = user.getUid();
         EditText item = findViewById(R.id.editText2);
-        String itemName = item.getText().toString().toLowerCase().substring(0,item.getText().toString().toLowerCase().indexOf(" "));
-        String amountOfItem = item.getText().toString().toLowerCase().substring(item.getText().toString().toLowerCase().indexOf(" ")+1);
+        String itemName =  item.getText().toString().toLowerCase().substring(item.getText().toString().toLowerCase().indexOf(" ")+1);
+        String amountOfItem = item.getText().toString().toLowerCase().substring(0,item.getText().toString().toLowerCase().indexOf(" "));
         String databaseListName = itemName + userID;
         if (amountOfItem.equals("")) {
             Toast.makeText(getApplicationContext(), "Lütfen ürün miktarını giriniz ...", Toast.LENGTH_LONG).show();
@@ -266,6 +279,120 @@ public class feedActivity extends AppCompatActivity {
 
             Intent intent = new Intent(this, feedActivity.class);
             startActivity(intent);
+        }
+    }
+
+    protected void addToDatabaseListen(View view) {
+
+        checkPermission();
+        final SpeechRecognizer mSpeechRecognizer = SpeechRecognizer.createSpeechRecognizer(this);
+
+        final Intent mSpeechRecognizerIntent = new Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH);
+        mSpeechRecognizerIntent.putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL,
+                RecognizerIntent.LANGUAGE_MODEL_FREE_FORM);
+        mSpeechRecognizerIntent.putExtra(RecognizerIntent.EXTRA_LANGUAGE,
+                Locale.getDefault());
+
+
+        mSpeechRecognizer.setRecognitionListener(new RecognitionListener() {
+            @Override
+            public void onReadyForSpeech(Bundle bundle) {
+
+            }
+
+            @Override
+            public void onBeginningOfSpeech() {
+
+            }
+
+            @Override
+            public void onRmsChanged(float v) {
+
+            }
+
+            @Override
+            public void onBufferReceived(byte[] bytes) {
+
+            }
+
+            @Override
+            public void onEndOfSpeech() {
+
+            }
+
+            @Override
+            public void onError(int i) {
+
+            }
+
+            @Override
+            public void onResults(Bundle bundle) {
+
+                ArrayList<String> matches = bundle
+                        .getStringArrayList(SpeechRecognizer.RESULTS_RECOGNITION);
+
+
+                if (matches != null) {
+                    String text=matches.get(0);
+
+                            FirebaseUser user = mAuth.getCurrentUser();
+                            String mail = user.getEmail();
+                            if(text.matches("[a-zA-Z]+")){
+                                String databaseListName = text.toLowerCase() + user.getUid();
+                                myRef.child(databaseListName).child("userEmail").setValue(mail);
+                                myRef.child(databaseListName).child("item").setValue(text);
+                                myRef.child(databaseListName).child("amountOfItem").setValue(1);
+                                myRef.child(databaseListName).child("added " + getCurrentDate()).setValue(1);
+                                AlertDialog.Builder theBuild = new AlertDialog.Builder(feedActivity.this);
+                                theBuild.setMessage(text+" eklendi");
+                                theBuild.show();
+                            }
+                            else{
+                                String databaseListName = text.substring(text.indexOf(" ")+1).toLowerCase() + user.getUid();
+                                myRef.child(databaseListName).child("userEmail").setValue(mail);
+                                myRef.child(databaseListName).child("item").setValue(text.substring(text.indexOf(" ")+1));
+                                myRef.child(databaseListName).child("amountOfItem").setValue(text.substring(0,text.indexOf(" ")));
+                                myRef.child(databaseListName).child("added " + getCurrentDate()).setValue(text.substring(0,text.indexOf(" ")));
+                                AlertDialog.Builder theBuild = new AlertDialog.Builder(feedActivity.this);
+                                theBuild.setMessage(text+" eklendi");
+                                theBuild.show();
+                            }
+                }
+            }
+
+            @Override
+            public void onPartialResults(Bundle bundle) {
+
+            }
+
+            @Override
+            public void onEvent(int i, Bundle bundle) {
+
+            }
+        });
+
+        findViewById(R.id.view_a).setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View view, MotionEvent motionEvent) {
+                switch (motionEvent.getAction()) {
+                    case MotionEvent.ACTION_UP:
+                        mSpeechRecognizer.stopListening();
+                        break;
+
+                    case MotionEvent.ACTION_DOWN:
+                        mSpeechRecognizer.startListening(mSpeechRecognizerIntent);
+                        break;
+                }
+                return false;
+            }
+        });
+    }
+
+    private void checkPermission() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            if (!(ContextCompat.checkSelfPermission(this, Manifest.permission.RECORD_AUDIO) == PackageManager.PERMISSION_GRANTED)) {
+                ActivityCompat.requestPermissions(this,new String[]{Manifest.permission.RECORD_AUDIO},1);
+            }
         }
     }
 

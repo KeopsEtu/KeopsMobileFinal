@@ -45,8 +45,8 @@
         app:layout_constraintVertical_bias="1.0"></FrameLayout>
     <Button
         android:id="@+id/view"
-        android:layout_width="23dp"
-        android:layout_height="19dp"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
         android:layout_marginTop="16dp"
         android:layout_marginEnd="61dp"
         android:layout_marginBottom="16dp"
@@ -60,13 +60,14 @@
 
     <Button
         android:id="@+id/view_a"
-        android:layout_width="24dp"
-        android:layout_height="19dp"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:onClick="addToDatabaseListen"
         android:layout_marginStart="8dp"
         android:layout_marginTop="16dp"
         android:layout_marginEnd="8dp"
         android:layout_marginBottom="16dp"
-        android:background="@drawable/ic_mic_none_black_24dp"
+        android:background="@drawable/round_default"
         android:text=""
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -77,7 +78,7 @@
     <EditText
         android:id="@+id/editText2"
         android:layout_width="0dp"
-        android:layout_height="wrap_content"
+        android:layout_height="40dp"
         android:layout_marginStart="9dp"
         android:layout_marginTop="16dp"
         android:layout_marginEnd="8dp"

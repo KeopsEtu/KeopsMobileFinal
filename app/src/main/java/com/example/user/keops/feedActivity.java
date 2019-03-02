@@ -13,12 +13,15 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.CheckBox;
+import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.SearchView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.daimajia.swipe.SwipeLayout;
 import com.google.firebase.auth.FirebaseAuth;
@@ -240,7 +243,31 @@ public class feedActivity extends AppCompatActivity {
             }
         });
     }
+    protected void addToDatabase(View view) {
+        FirebaseUser user = mAuth.getCurrentUser();
+        String mail = user.getEmail();
+        String userID = user.getUid();
+        EditText item = findViewById(R.id.editText2);
+        String itemName = item.getText().toString().toLowerCase().substring(0,item.getText().toString().toLowerCase().indexOf(" "));
+        String amountOfItem = item.getText().toString().toLowerCase().substring(item.getText().toString().toLowerCase().indexOf(" ")+1);
+        String databaseListName = itemName + userID;
+        if (amountOfItem.equals("")) {
+            Toast.makeText(getApplicationContext(), "Lütfen ürün miktarını giriniz ...", Toast.LENGTH_LONG).show();
+        } else if (item.getText().toString().equals("")) {
+            Toast.makeText(getApplicationContext(), "Lütfen ürün ismini giriniz ...", Toast.LENGTH_LONG).show();
+        } else {
+            myRef.child(databaseListName).child("userEmail").setValue(mail);
+            myRef.child(databaseListName).child("item").setValue(itemName);
+            myRef.child(databaseListName).child("amountOfItem").setValue(amountOfItem);
+            myRef.child(databaseListName).child("added " + getCurrentDate()).setValue(amountOfItem);
 
+            Toast.makeText(getApplicationContext(), amountOfItem + " " +
+                    itemName + "  Başarıyla eklendi ...", Toast.LENGTH_LONG).show();
+
+            Intent intent = new Intent(this, feedActivity.class);
+            startActivity(intent);
+        }
+    }
 
     public String getCurrentDate() {
         Date c = Calendar.getInstance().getTime();

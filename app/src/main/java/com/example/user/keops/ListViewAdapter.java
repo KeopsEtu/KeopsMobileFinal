@@ -8,12 +8,15 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
-import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.daimajia.swipe.SwipeLayout;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 
 import java.util.List;
 
@@ -21,6 +24,10 @@ public class ListViewAdapter extends ArrayAdapter<String> {
 
     private feedActivity activity;
     private List<String> items;
+
+    FirebaseDatabase database;
+    DatabaseReference myRef;
+    private FirebaseAuth mAuth;
 
 
     public ListViewAdapter(feedActivity context, int resource, List<String> objects) {
@@ -58,7 +65,7 @@ public class ListViewAdapter extends ArrayAdapter<String> {
             @Override
             public void onClick(View v) {
                 Intent i = new Intent(activity.getApplicationContext(), analysisActivity.class);
-                i.putExtra("send_string",temp);
+                i.putExtra("send_string", temp);
                 activity.startActivity(i);
             }
         });
@@ -84,6 +91,11 @@ public class ListViewAdapter extends ArrayAdapter<String> {
     private void showEditDialog(final int position, final ViewHolder holder) {
         AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(activity);
 
+        database = FirebaseDatabase.getInstance();
+        myRef = database.getReference();
+        mAuth = FirebaseAuth.getInstance();
+
+
         alertDialogBuilder.setTitle("EDIT ELEMENT");
         final EditText input = new EditText(activity);
         LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(
@@ -99,7 +111,20 @@ public class ListViewAdapter extends ArrayAdapter<String> {
                         new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog, int id) {
                                 // get user input and set it to result edit text
+
+                                FirebaseUser user = mAuth.getCurrentUser();
+                                String userID = user.getUid();
+
+                                String itemName = items.get(position);
+                                //System.out.println("item before edit: " + itemName);
+
+                                String databaseListName = itemName + userID;
+
                                 items.set(position, input.getText().toString().trim());
+                                itemName = items.get(position);
+
+                                //System.out.println("item after edit: " + itemName);
+                                myRef.child(databaseListName).child("item").setValue(itemName);
 
                                 //notify data set changed
                                 activity.updateAdapter();

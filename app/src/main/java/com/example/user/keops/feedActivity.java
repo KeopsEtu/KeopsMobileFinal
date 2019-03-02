@@ -258,34 +258,44 @@ public class feedActivity extends AppCompatActivity {
         String mail = user.getEmail();
         String userID = user.getUid();
         EditText item = findViewById(R.id.editText2);
-
         String itemName = "";
         String amountOfItem = "";
-        if (item.getText().toString().equals("")) {
-            Toast.makeText(getApplicationContext(), "Lütfen ürün ismini ve miktarını aralarında boşluk bırakarak giriniz ...", Toast.LENGTH_LONG).show();
+
+        while (item.getText().toString().indexOf(" ") == 0 && item.getText().toString().length() >= 1)
+            item.setText(item.getText().toString().substring(1));
+
+        if (item.getText().toString().equals("") || !item.getText().toString().contains(" ")) {
+            Toast.makeText(getApplicationContext(), "Lütfen ürün ismini, ardından miktarını aralarında boşluk bırakarak giriniz ...", Toast.LENGTH_LONG).show();
         } else {
-            itemName = item.getText().toString().toLowerCase().substring(item.getText().toString().toLowerCase().indexOf(" ") + 1);
-            amountOfItem = item.getText().toString().toLowerCase().substring(0, item.getText().toString().toLowerCase().indexOf(" "));
+            itemName = item.getText().toString().toLowerCase().substring(0, item.getText().toString().toLowerCase().indexOf(" "));
+            item.setText(item.getText().toString().substring(item.getText().toString().indexOf(" ")));
 
-            String databaseListName = itemName + userID;
+            while (item.getText().toString().indexOf(" ") == 0 && item.getText().toString().length() >= 1)
+                item.setText(item.getText().toString().substring(1));
 
-            if (amountOfItem.equals("")) {
-                Toast.makeText(getApplicationContext(), "Lütfen ürün miktarını giriniz ...", Toast.LENGTH_LONG).show();
-            } else if (item.getText().toString().equals("")) {
-                Toast.makeText(getApplicationContext(), "Lütfen ürün ismini giriniz ...", Toast.LENGTH_LONG).show();
+            if (item.getText().length() == 0) {
+                Toast.makeText(getApplicationContext(), "Lütfen ürün ismini ve miktarını da aralarında boşluk bırakarak giriniz ...", Toast.LENGTH_LONG).show();
             } else {
-                myRef.child(databaseListName).child("userEmail").setValue(mail);
-                myRef.child(databaseListName).child("item").setValue(itemName);
-                myRef.child(databaseListName).child("amountOfItem").setValue(amountOfItem);
-                myRef.child(databaseListName).child("added " + getCurrentDate()).setValue(amountOfItem);
+                amountOfItem = item.getText().toString().toLowerCase();
+                String databaseListName = itemName + userID;
 
-                Toast.makeText(getApplicationContext(), amountOfItem + " " +
-                        itemName + "  Başarıyla eklendi ...", Toast.LENGTH_LONG).show();
+                if (amountOfItem.equals("")) {
+                    Toast.makeText(getApplicationContext(), "Lütfen ürün miktarını giriniz ...", Toast.LENGTH_LONG).show();
+                } else if (item.getText().toString().equals("")) {
+                    Toast.makeText(getApplicationContext(), "Lütfen ürün ismini giriniz ...", Toast.LENGTH_LONG).show();
+                } else {
+                    myRef.child(databaseListName).child("userEmail").setValue(mail);
+                    myRef.child(databaseListName).child("item").setValue(itemName);
+                    myRef.child(databaseListName).child("amountOfItem").setValue(amountOfItem);
+                    myRef.child(databaseListName).child("added " + getCurrentDate()).setValue(amountOfItem);
 
-                Intent intent = new Intent(this, feedActivity.class);
-                startActivity(intent);
+                    Toast.makeText(getApplicationContext(), amountOfItem + " " +
+                            itemName + "  Başarıyla eklendi ...", Toast.LENGTH_LONG).show();
+
+                    Intent intent = new Intent(this, feedActivity.class);
+                    startActivity(intent);
+                }
             }
-
         }
     }
 

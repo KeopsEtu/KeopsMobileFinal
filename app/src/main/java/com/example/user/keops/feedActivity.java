@@ -23,10 +23,8 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
-import android.view.inputmethod.InputMethodManager;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
-import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.SearchView;
@@ -48,8 +46,6 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Locale;
-import java.util.Timer;
-import java.util.TimerTask;
 
 public class feedActivity extends AppCompatActivity {
 
@@ -256,29 +252,40 @@ public class feedActivity extends AppCompatActivity {
             }
         });
     }
+
     protected void addToDatabase(View view) {
         FirebaseUser user = mAuth.getCurrentUser();
         String mail = user.getEmail();
         String userID = user.getUid();
         EditText item = findViewById(R.id.editText2);
-        String itemName =  item.getText().toString().toLowerCase().substring(item.getText().toString().toLowerCase().indexOf(" ")+1);
-        String amountOfItem = item.getText().toString().toLowerCase().substring(0,item.getText().toString().toLowerCase().indexOf(" "));
-        String databaseListName = itemName + userID;
-        if (amountOfItem.equals("")) {
-            Toast.makeText(getApplicationContext(), "Lütfen ürün miktarını giriniz ...", Toast.LENGTH_LONG).show();
-        } else if (item.getText().toString().equals("")) {
-            Toast.makeText(getApplicationContext(), "Lütfen ürün ismini giriniz ...", Toast.LENGTH_LONG).show();
+
+        String itemName = "";
+        String amountOfItem = "";
+        if (item.getText().toString().equals("")) {
+            Toast.makeText(getApplicationContext(), "Lütfen ürün ismini ve miktarını aralarında boşluk bırakarak giriniz ...", Toast.LENGTH_LONG).show();
         } else {
-            myRef.child(databaseListName).child("userEmail").setValue(mail);
-            myRef.child(databaseListName).child("item").setValue(itemName);
-            myRef.child(databaseListName).child("amountOfItem").setValue(amountOfItem);
-            myRef.child(databaseListName).child("added " + getCurrentDate()).setValue(amountOfItem);
+            itemName = item.getText().toString().toLowerCase().substring(item.getText().toString().toLowerCase().indexOf(" ") + 1);
+            amountOfItem = item.getText().toString().toLowerCase().substring(0, item.getText().toString().toLowerCase().indexOf(" "));
 
-            Toast.makeText(getApplicationContext(), amountOfItem + " " +
-                    itemName + "  Başarıyla eklendi ...", Toast.LENGTH_LONG).show();
+            String databaseListName = itemName + userID;
 
-            Intent intent = new Intent(this, feedActivity.class);
-            startActivity(intent);
+            if (amountOfItem.equals("")) {
+                Toast.makeText(getApplicationContext(), "Lütfen ürün miktarını giriniz ...", Toast.LENGTH_LONG).show();
+            } else if (item.getText().toString().equals("")) {
+                Toast.makeText(getApplicationContext(), "Lütfen ürün ismini giriniz ...", Toast.LENGTH_LONG).show();
+            } else {
+                myRef.child(databaseListName).child("userEmail").setValue(mail);
+                myRef.child(databaseListName).child("item").setValue(itemName);
+                myRef.child(databaseListName).child("amountOfItem").setValue(amountOfItem);
+                myRef.child(databaseListName).child("added " + getCurrentDate()).setValue(amountOfItem);
+
+                Toast.makeText(getApplicationContext(), amountOfItem + " " +
+                        itemName + "  Başarıyla eklendi ...", Toast.LENGTH_LONG).show();
+
+                Intent intent = new Intent(this, feedActivity.class);
+                startActivity(intent);
+            }
+
         }
     }
 
@@ -333,30 +340,29 @@ public class feedActivity extends AppCompatActivity {
 
 
                 if (matches != null) {
-                    String text=matches.get(0);
+                    String text = matches.get(0);
 
-                            FirebaseUser user = mAuth.getCurrentUser();
-                            String mail = user.getEmail();
-                            if(text.matches("[a-zA-Z]+")){
-                                String databaseListName = text.toLowerCase() + user.getUid();
-                                myRef.child(databaseListName).child("userEmail").setValue(mail);
-                                myRef.child(databaseListName).child("item").setValue(text);
-                                myRef.child(databaseListName).child("amountOfItem").setValue(1);
-                                myRef.child(databaseListName).child("added " + getCurrentDate()).setValue(1);
-                                AlertDialog.Builder theBuild = new AlertDialog.Builder(feedActivity.this);
-                                theBuild.setMessage(text+" eklendi");
-                                theBuild.show();
-                            }
-                            else{
-                                String databaseListName = text.substring(text.indexOf(" ")+1).toLowerCase() + user.getUid();
-                                myRef.child(databaseListName).child("userEmail").setValue(mail);
-                                myRef.child(databaseListName).child("item").setValue(text.substring(text.indexOf(" ")+1));
-                                myRef.child(databaseListName).child("amountOfItem").setValue(text.substring(0,text.indexOf(" ")));
-                                myRef.child(databaseListName).child("added " + getCurrentDate()).setValue(text.substring(0,text.indexOf(" ")));
-                                AlertDialog.Builder theBuild = new AlertDialog.Builder(feedActivity.this);
-                                theBuild.setMessage(text+" eklendi");
-                                theBuild.show();
-                            }
+                    FirebaseUser user = mAuth.getCurrentUser();
+                    String mail = user.getEmail();
+                    if (text.matches("[a-zA-Z]+")) {
+                        String databaseListName = text.toLowerCase() + user.getUid();
+                        myRef.child(databaseListName).child("userEmail").setValue(mail);
+                        myRef.child(databaseListName).child("item").setValue(text);
+                        myRef.child(databaseListName).child("amountOfItem").setValue(1);
+                        myRef.child(databaseListName).child("added " + getCurrentDate()).setValue(1);
+                        AlertDialog.Builder theBuild = new AlertDialog.Builder(feedActivity.this);
+                        theBuild.setMessage(text + " eklendi");
+                        theBuild.show();
+                    } else {
+                        String databaseListName = text.substring(text.indexOf(" ") + 1).toLowerCase() + user.getUid();
+                        myRef.child(databaseListName).child("userEmail").setValue(mail);
+                        myRef.child(databaseListName).child("item").setValue(text.substring(text.indexOf(" ") + 1));
+                        myRef.child(databaseListName).child("amountOfItem").setValue(text.substring(0, text.indexOf(" ")));
+                        myRef.child(databaseListName).child("added " + getCurrentDate()).setValue(text.substring(0, text.indexOf(" ")));
+                        AlertDialog.Builder theBuild = new AlertDialog.Builder(feedActivity.this);
+                        theBuild.setMessage(text + " eklendi");
+                        theBuild.show();
+                    }
                 }
             }
 
@@ -391,7 +397,7 @@ public class feedActivity extends AppCompatActivity {
     private void checkPermission() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             if (!(ContextCompat.checkSelfPermission(this, Manifest.permission.RECORD_AUDIO) == PackageManager.PERMISSION_GRANTED)) {
-                ActivityCompat.requestPermissions(this,new String[]{Manifest.permission.RECORD_AUDIO},1);
+                ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.RECORD_AUDIO}, 1);
             }
         }
     }

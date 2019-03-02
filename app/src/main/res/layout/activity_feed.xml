@@ -11,61 +11,14 @@
         android:layout_width="395dp"
         android:layout_height="579dp"
         android:layout_marginStart="8dp"
-        android:layout_marginTop="64dp"
+        android:layout_marginTop="16dp"
         android:layout_marginEnd="8dp"
-        android:layout_marginBottom="8dp"
-        app:layout_constraintBottom_toTopOf="@+id/deletedItemsButton"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.307" />
+        app:layout_constraintTop_toTopOf="parent" />
 
-    <Button
-        android:id="@+id/view"
-        android:layout_width="0dp"
-        android:layout_height="19dp"
-        android:layout_marginTop="8dp"
-        android:layout_marginEnd="61dp"
-        android:layout_marginBottom="8dp"
-        android:background="@drawable/ic_add_black_24dp"
-        android:text=""
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/editText2"
-        app:layout_constraintTop_toBottomOf="@+id/deletedItemsButton"
-        app:layout_constraintVertical_bias="1.0" />
 
-    <Button
-        android:id="@+id/view_a"
-        android:layout_width="36dp"
-        android:layout_height="19dp"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="8dp"
-        android:layout_marginEnd="8dp"
-        android:layout_marginBottom="8dp"
-        android:background="@drawable/ic_mic_none_black_24dp"
-        android:text=""
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toEndOf="@+id/view"
-        app:layout_constraintTop_toBottomOf="@+id/deletedItemsButton"
-        app:layout_constraintVertical_bias="1.0" />
-
-    <EditText
-        android:id="@+id/editText2"
-        android:layout_width="0dp"
-        android:layout_height="19dp"
-        android:layout_marginStart="9dp"
-        android:layout_marginEnd="8dp"
-        android:layout_marginBottom="8dp"
-        android:background="@drawable/rounded_corner"
-        android:ems="10"
-        android:inputType="textShortMessage"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toStartOf="@+id/view"
-        app:layout_constraintStart_toStartOf="parent" />
 
     <Button
         android:id="@+id/deletedItemsButton"
@@ -73,12 +26,68 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
         android:layout_marginEnd="8dp"
-        android:layout_marginBottom="28dp"
+        android:layout_marginBottom="60dp"
         android:onClick="deletedItems"
         android:text="SILINENLER"
-        app:layout_constraintBottom_toTopOf="@+id/editText2"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.666"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent" />
+
+    <FrameLayout
+        android:layout_width="417dp"
+        android:layout_height="60dp"
+        android:background="#B8B8B8"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/deletedItemsButton"
+        app:layout_constraintVertical_bias="1.0"></FrameLayout>
+    <Button
+        android:id="@+id/view"
+        android:layout_width="23dp"
+        android:layout_height="19dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginEnd="61dp"
+        android:layout_marginBottom="16dp"
+        android:background="@drawable/ic_add_black_24dp"
+        android:text=""
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/editText2"
+        app:layout_constraintTop_toBottomOf="@+id/deletedItemsButton" />
+
+    <Button
+        android:id="@+id/view_a"
+        android:layout_width="24dp"
+        android:layout_height="19dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginBottom="16dp"
+        android:background="@drawable/ic_mic_none_black_24dp"
+        android:text=""
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toEndOf="@+id/view"
+        app:layout_constraintTop_toBottomOf="@+id/deletedItemsButton" />
+
+    <EditText
+        android:id="@+id/editText2"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="9dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginBottom="16dp"
+        android:background="@drawable/rounded_corner"
+        android:ems="10"
+        android:inputType="textShortMessage"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/view"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/deletedItemsButton" />
+
 
 </android.support.constraint.ConstraintLayout>

@@ -18,6 +18,9 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 
 public class ListViewAdapter extends ArrayAdapter<String> {
@@ -143,7 +146,7 @@ public class ListViewAdapter extends ArrayAdapter<String> {
     }
 
     /**
-     * Editting confirm dialog
+     * Deleting confirm dialog
      *
      * @param position
      * @param holder
@@ -170,11 +173,40 @@ public class ListViewAdapter extends ArrayAdapter<String> {
                         new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog, int id) {
 
+                                FirebaseUser user = mAuth.getCurrentUser();
+                                String userID = user.getUid();
+
+                                String itemName = items.get(position);
+                                String databaseListName = itemName.substring(itemName.indexOf(" ") + 1) + userID;
+
+                                //System.out.println("aaaa databaseListName: " + databaseListName);
+
+                                String newAmaountOfItem = itemName.substring(0, itemName.indexOf(" "));
+                                Integer newAmount = Integer.parseInt(newAmaountOfItem);
+
+                                //System.out.println("aaaa newAmaountOfItem: " + newAmaountOfItem);
+
+                                String removedAmaountOfItem = input.getText().toString();
+                                Integer removedAmount = Integer.parseInt(removedAmaountOfItem);
+
+                                //System.out.println("aaaa removedAmaountOfItem: " + removedAmaountOfItem);
+
+                                String updatedAmount = "0";
+                                if ((newAmount - removedAmount) > 0)
+                                    updatedAmount = "" + (newAmount - removedAmount);
+
+                                //System.out.println("aaaa updatedAmount: " + updatedAmount);
+
+                                myRef.child(databaseListName).child("removed " + getCurrentDate()).setValue("" + input.getText().toString());
+                                myRef.child(databaseListName).child("amountOfItem").setValue(updatedAmount);
 
                                 //notify data set changed
-                                items.remove(position);
+                                if ((newAmount - removedAmount) == 0)
+                                    items.remove(position);
+
                                 holder.swipeLayout.close();
                                 activity.updateAdapter();
+
                             }
                         })
                 .setNegativeButton("Cancel",
@@ -189,15 +221,11 @@ public class ListViewAdapter extends ArrayAdapter<String> {
         alertDialog.show();
     }
 
-
     private View.OnClickListener onDeleteListener(final int position, final ViewHolder holder) {
         return new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 showDeleteDialog(position, holder);
-                //items.remove(position);
-                //holder.swipeLayout.close();
-                //activity.updateAdapter();
             }
         };
     }
@@ -218,5 +246,15 @@ public class ListViewAdapter extends ArrayAdapter<String> {
 
             swipeLayout.setShowMode(SwipeLayout.ShowMode.LayDown);
         }
+    }
+
+    public String getCurrentDate() {
+        Date c = Calendar.getInstance().getTime();
+        System.out.println("Current time => " + c);
+
+        SimpleDateFormat df = new SimpleDateFormat("dd-MM-yyyy-HH:mm");
+        String dateTime = df.format(c);
+
+        return dateTime;
     }
 }

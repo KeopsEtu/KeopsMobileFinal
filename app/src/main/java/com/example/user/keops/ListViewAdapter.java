@@ -95,7 +95,6 @@ public class ListViewAdapter extends ArrayAdapter<String> {
         myRef = database.getReference();
         mAuth = FirebaseAuth.getInstance();
 
-
         alertDialogBuilder.setTitle("EDIT ELEMENT");
         final EditText input = new EditText(activity);
         LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(
@@ -143,13 +142,62 @@ public class ListViewAdapter extends ArrayAdapter<String> {
         alertDialog.show();
     }
 
+    /**
+     * Editting confirm dialog
+     *
+     * @param position
+     * @param holder
+     */
+    private void showDeleteDialog(final int position, final ViewHolder holder) {
+        AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(activity);
+
+        database = FirebaseDatabase.getInstance();
+        myRef = database.getReference();
+        mAuth = FirebaseAuth.getInstance();
+
+        alertDialogBuilder.setTitle("DELETE ELEMENT");
+        final EditText input = new EditText(activity);
+        LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(
+                LinearLayout.LayoutParams.MATCH_PARENT,
+                LinearLayout.LayoutParams.MATCH_PARENT);
+        input.setText("1");
+        input.setLayoutParams(lp);
+        alertDialogBuilder.setView(input);
+
+        alertDialogBuilder
+                .setCancelable(false)
+                .setPositiveButton("OK",
+                        new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int id) {
+
+
+                                //notify data set changed
+                                items.remove(position);
+                                holder.swipeLayout.close();
+                                activity.updateAdapter();
+                            }
+                        })
+                .setNegativeButton("Cancel",
+                        new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int id) {
+                                dialog.cancel();
+                            }
+                        });
+
+        // create alert dialog and show it
+        AlertDialog alertDialog = alertDialogBuilder.create();
+        alertDialog.show();
+    }
+
+
     private View.OnClickListener onDeleteListener(final int position, final ViewHolder holder) {
         return new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                items.remove(position);
-                holder.swipeLayout.close();
-                activity.updateAdapter();
+                showDeleteDialog(position, holder);
+                //items.remove(position);
+                //holder.swipeLayout.close();
+                //activity.updateAdapter();
             }
         };
     }

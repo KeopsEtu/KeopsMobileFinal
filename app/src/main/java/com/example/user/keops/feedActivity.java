@@ -219,11 +219,6 @@ public class feedActivity extends AppCompatActivity {
                             if (Integer.parseInt(hashMap.get("amountOfItem")) > 0) {
                                 listItemFromFB.add(hashMap.get("amountOfItem") + " " + hashMap.get("item"));
                                 counts.add(Integer.parseInt(String.valueOf(hashMap.get("amountOfItem"))));
-                            } else {
-                                if (!(hashMap.get("amountOfItem").equals(hashMap.get("removedCount")))) {
-                                    listItemFromFB.add(hashMap.get("item"));
-                                    counts.add(Integer.parseInt(String.valueOf(hashMap.get("amountOfItem"))));
-                                }
                             }
                         }
                     }

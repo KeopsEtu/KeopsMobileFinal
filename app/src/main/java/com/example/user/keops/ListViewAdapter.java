@@ -4,7 +4,6 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -180,31 +179,36 @@ public class ListViewAdapter extends ArrayAdapter<String> {
                                 String itemName = items.get(position);
                                 String databaseListName = itemName.substring(itemName.indexOf(" ") + 1) + userID;
 
-                                //System.out.println("aaaa databaseListName: " + databaseListName);
+                                System.out.println("aaaa databaseListName: " + databaseListName);
 
-                                String newAmaountOfItem = itemName.substring(0, itemName.indexOf(" "));
-                                Integer newAmount = Integer.parseInt(newAmaountOfItem);
+                                String amaountOfItem = itemName.substring(0, itemName.indexOf(" "));
+                                Integer amount = Integer.parseInt(amaountOfItem);
 
-                                //System.out.println("aaaa newAmaountOfItem: " + newAmaountOfItem);
+                                System.out.println("aaaa newAmaountOfItem: " + amaountOfItem);
 
                                 String removedAmaountOfItem = input.getText().toString();
                                 Integer removedAmount = Integer.parseInt(removedAmaountOfItem);
 
-                                //System.out.println("aaaa removedAmaountOfItem: " + removedAmaountOfItem);
+                                System.out.println("aaaa removedAmaountOfItem: " + removedAmaountOfItem);
 
                                 String updatedAmount = "0";
-                                if ((newAmount - removedAmount) > 0)
-                                    updatedAmount = "" + (newAmount - removedAmount);
+                                if ((amount - removedAmount) > 0)
+                                    updatedAmount = "" + (amount - removedAmount);
 
-                                //System.out.println("aaaa updatedAmount: " + updatedAmount);
+                                System.out.println("aaaa updatedAmount: " + updatedAmount);
 
-                                myRef.child(databaseListName).child("removed " + getCurrentDate()).setValue("" + input.getText().toString());
+                                if (removedAmount >= amount)
+                                    myRef.child(databaseListName).child("removed " + getCurrentDate()).setValue("" + amount);
+                                else
+                                    myRef.child(databaseListName).child("removed " + getCurrentDate()).setValue("" + input.getText().toString());
+
                                 myRef.child(databaseListName).child("amountOfItem").setValue(updatedAmount);
 
-                                if ((newAmount - removedAmount) == 0){
+                                if ((amount - removedAmount) == 0) {
                                     items.remove(position);
 
-                                Log.d("itemcount" , ""+(newAmount - removedAmount));}
+                                    //Log.d("itemcount" , ""+(newAmount - removedAmount));
+                                }
 
                                 //notify data set changed
                                 holder.swipeLayout.close();

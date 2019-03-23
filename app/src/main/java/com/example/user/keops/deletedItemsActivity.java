@@ -26,7 +26,10 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 
 public class deletedItemsActivity extends AppCompatActivity {
@@ -40,6 +43,10 @@ public class deletedItemsActivity extends AppCompatActivity {
     ArrayList<Integer> counts;
     private FirebaseAuth mAuth;
     ArrayList<HashMap<String, String>> hashMapsOfItems = new ArrayList<>();
+    ArrayList<Date> dates;
+    ArrayList<Integer> deletes;
+    ArrayList<Date> dates2;
+    ArrayList<Integer> added;
 
     private ArrayAdapter<String> existingListAdapter;
     private TextView totalClassmates;
@@ -91,6 +98,10 @@ public class deletedItemsActivity extends AppCompatActivity {
         counts = new ArrayList<>();
         delete = new ArrayList<>();
         temp = new ArrayList<>();
+        deletes = new ArrayList<>();
+        added = new ArrayList<>();
+        dates = new ArrayList<>();
+        dates2 = new ArrayList<>();
 
         getDataFromFirebase();
         setListViewHeader();
@@ -191,11 +202,66 @@ public class deletedItemsActivity extends AppCompatActivity {
 
                     if (mAuth.getCurrentUser().getEmail().equals(hashMap.get("userEmail"))) {
                         if (hashMap.get("amountOfItem") != null) {
-                            if (Integer.parseInt(hashMap.get("amountOfItem")) > 0) {
+                            if (Integer.parseInt(hashMap.get("amountOfItem")) == 0) {
                                 listItemFromFB.add(hashMap.get("item"));
                                 counts.add(Integer.parseInt(String.valueOf(hashMap.get("amountOfItem"))));
                             } else {
-                                if (!(hashMap.get("amountOfItem").equals(hashMap.get("removedCount")))) {
+                                for (String key : hashMap.keySet()) {
+                                    if(key.startsWith("removed")) {
+                                        String date = key.substring(key.indexOf(" ")+1,key.indexOf(" ")+11);
+                                        deletes.add(Integer.parseInt(hashMap.get(key)));
+                                        Date date1 = null;
+                                        try {
+                                            date1 = new SimpleDateFormat("dd-MM-yyyy").parse(date);
+                                        } catch (ParseException e) { }
+                                        dates.add(date1);
+                                    } else if(key.startsWith("added")) {
+                                        String date = key.substring(key.indexOf(" ")+1,key.indexOf(" ")+11);
+                                        added.add(Integer.parseInt(hashMap.get(key)));
+                                        Date date1 = null;
+                                        try {
+                                            date1 = new SimpleDateFormat("dd-MM-yyyy").parse(date);
+                                        } catch (ParseException e) { }
+                                        dates2.add(date1);
+                                    }
+                                }
+                                for(int i=0; i < dates.size(); i++){
+                                    for(int j=1; j < (dates.size()-i); j++){
+                                        if(dates.get(j-1).compareTo(dates.get(j))>= 0){
+                                            Date temp = dates.get(j-1);
+                                            dates.set(j-1, dates.get(j));
+                                            dates.set(j,temp);
+                                            int temp2 = deletes.get(j-1);
+                                            deletes.set(j-1, deletes.get(j));
+                                            deletes.set(j,temp2);
+                                        }
+
+                                    }
+                                }
+                                float temp3 = 0;
+                                for(int i=1; i < dates.size(); i++) {
+                                    temp3 = temp3 + (dates.get(i).getTime() - dates.get(i-1).getTime()) / 3600000 / (float)(deletes.get(i));
+                                }
+                                int temp6 = (int)(temp3/(dates.size()-1));
+                                for(int i=0; i < dates2.size(); i++){
+                                    for(int j=1; j < (dates2.size()-i); j++){
+                                        if(dates2.get(j-1).compareTo(dates2.get(j))>= 0){
+                                            Date temp = dates2.get(j-1);
+                                            dates2.set(j-1, dates2.get(j));
+                                            dates2.set(j,temp);
+                                            int temp2 = added.get(j-1);
+                                            added.set(j-1, added.get(j));
+                                            added.set(j,temp2);
+                                        }
+
+                                    }
+                                }
+                                float temp4 = 0;
+                                for(int i=1; i < dates2.size(); i++) {
+                                    temp4 = temp4 + (dates2.get(i).getTime() - dates2.get(i-1).getTime()) / 3600000 / (float)(added.get(i));
+                                }
+                                int temp5 = (int)(temp4/(dates2.size()-1));
+                                if (Integer.parseInt(hashMap.get("amountOfItem"))*temp6>temp5) {
                                     listItemFromFB.add(hashMap.get("item"));
                                     counts.add(Integer.parseInt(String.valueOf(hashMap.get("amountOfItem"))));
                                 }

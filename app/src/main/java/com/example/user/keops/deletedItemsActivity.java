@@ -176,7 +176,7 @@ public class deletedItemsActivity extends AppCompatActivity {
     }
 
     private void handleIntent(Intent intent) {
-
+        System.out.print("dsfsfdsd");
         if (Intent.ACTION_SEARCH.equals(intent.getAction())) {
             final String query = intent.getStringExtra(SearchManager.QUERY);
             final Handler handler = new Handler();

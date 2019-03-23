@@ -92,6 +92,7 @@ public class analysisActivity extends AppCompatActivity {
 
         Bundle extras = getIntent().getExtras();
         final String value = extras.getString("send_string");
+        final String value2 = value.substring(value.indexOf(" ")+1);
 
         myRef.addValueEventListener(new ValueEventListener() {
             @Override
@@ -99,7 +100,7 @@ public class analysisActivity extends AppCompatActivity {
                 for (DataSnapshot ds : dataSnapshot.getChildren()) {
                     HashMap<String, String> hashMap = (HashMap<String, String>) ds.getValue();
                     if (mAuth.getCurrentUser().getEmail().equals(hashMap.get("userEmail"))) {
-                        if (hashMap.get("item").equals(value))
+                        if (hashMap.get("item").equals(value2))
                             for (String key : hashMap.keySet()) {
                                 if(key.startsWith("removed")) {
                                     String date = key.substring(key.indexOf(" ")+1,key.indexOf(" ")+11);

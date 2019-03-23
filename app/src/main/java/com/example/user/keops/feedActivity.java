@@ -55,6 +55,7 @@ public class feedActivity extends AppCompatActivity {
     DatabaseReference myRef;
     ArrayList<String> listItemFromFB;
     ArrayList<String> delete;
+    HashMap<String, String> hashMap;
     ArrayList<String> temp;
     ArrayList<Integer> counts;
     private FirebaseAuth mAuth;
@@ -210,7 +211,7 @@ public class feedActivity extends AppCompatActivity {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 for (DataSnapshot ds : dataSnapshot.getChildren()) {
-                    HashMap<String, String> hashMap = (HashMap<String, String>) ds.getValue();
+                    hashMap = (HashMap<String, String>) ds.getValue();
 
                     hashMapsOfItems.add(hashMap);
 
@@ -279,9 +280,16 @@ public class feedActivity extends AppCompatActivity {
                 } else if (item.getText().toString().equals("")) {
                     Toast.makeText(getApplicationContext(), "Lütfen ürün ismini giriniz ...", Toast.LENGTH_LONG).show();
                 } else {
+                    String temp = "";
+                    for (int i =0; i<hashMapsOfItems.size();i++) {
+                        if (hashMapsOfItems.get(i).get("item").equals(itemName) && mAuth.getCurrentUser().getEmail().equals(hashMapsOfItems.get(i).get("userEmail"))) {
+                            temp = hashMapsOfItems.get(i).get("amountOfItem");
+                        }
+                    }
                     myRef.child(databaseListName).child("userEmail").setValue(mail);
                     myRef.child(databaseListName).child("item").setValue(itemName);
-                    myRef.child(databaseListName).child("amountOfItem").setValue(amountOfItem);
+                    int temp2 = Integer.parseInt(amountOfItem) + Integer.parseInt(temp);
+                    myRef.child(databaseListName).child("amountOfItem").setValue(temp2+"");
                     myRef.child(databaseListName).child("added " + getCurrentDate()).setValue(amountOfItem);
 
                     Toast.makeText(getApplicationContext(), amountOfItem + " " +

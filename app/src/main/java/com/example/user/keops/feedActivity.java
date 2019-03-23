@@ -354,27 +354,109 @@ public class feedActivity extends AppCompatActivity {
 
                 if (matches != null) {
                     String text = matches.get(0);
+                    System.out.println(text);
+                    if(text.contains("ekle")) {
 
-                    FirebaseUser user = mAuth.getCurrentUser();
-                    String mail = user.getEmail();
-                    if (text.matches("[a-zA-Z]+")) {
-                        String databaseListName = text.toLowerCase() + user.getUid();
-                        myRef.child(databaseListName).child("userEmail").setValue(mail);
-                        myRef.child(databaseListName).child("item").setValue(text);
-                        myRef.child(databaseListName).child("amountOfItem").setValue(1);
-                        myRef.child(databaseListName).child("added " + getCurrentDate()).setValue(1);
-                        AlertDialog.Builder theBuild = new AlertDialog.Builder(feedActivity.this);
-                        theBuild.setMessage(text + " eklendi");
-                        theBuild.show();
-                    } else {
-                        String databaseListName = text.substring(text.indexOf(" ")+1).toLowerCase() + user.getUid();
-                        myRef.child(databaseListName).child("userEmail").setValue(mail);
-                        myRef.child(databaseListName).child("item").setValue(text.substring(0,text.indexOf(" ")));
-                        myRef.child(databaseListName).child("amountOfItem").setValue(text.substring(text.indexOf(" ")+1));
-                        myRef.child(databaseListName).child("added " + getCurrentDate()).setValue(text.substring(text.indexOf(" ")+1));
-                        AlertDialog.Builder theBuild = new AlertDialog.Builder(feedActivity.this);
-                        theBuild.setMessage(text + " eklendi");
-                        theBuild.show();
+                        FirebaseUser user = mAuth.getCurrentUser();
+                        String mail = user.getEmail();
+                        if (text.matches("[a-zA-Z]+")) {
+                            String added=text.substring(text.lastIndexOf(" ")+1);
+                            String addedItem=text.substring(0,text.indexOf(" "));
+                            String addedAmount="1";
+                            String databaseListName = addedItem.toLowerCase() + user.getUid();
+                            myRef.child(databaseListName).child("userEmail").setValue(mail);
+                            myRef.child(databaseListName).child("item").setValue(addedItem);
+                            myRef.child(databaseListName).child("amountOfItem").setValue(1);
+                            myRef.child(databaseListName).child("added " + getCurrentDate()).setValue(1);
+                            AlertDialog.Builder theBuild = new AlertDialog.Builder(feedActivity.this);
+                            theBuild.setMessage(addedItem + " eklendi");
+                            theBuild.show();
+                            Intent intent = new Intent(getApplicationContext(), feedActivity.class);
+                            startActivity(intent);
+                        } else {
+                            String added=text.substring(text.lastIndexOf(" ")+1);
+                            String addedItem=text.substring(text.indexOf(" ")+1,text.lastIndexOf(" "));
+                            String addedAmount=text.substring(0,text.indexOf(" "));
+
+                            String databaseListName = addedItem.toLowerCase() + user.getUid();
+                            myRef.child(databaseListName).child("userEmail").setValue(mail);
+                            myRef.child(databaseListName).child("item").setValue(addedItem);
+                            myRef.child(databaseListName).child("amountOfItem").setValue(addedAmount);
+                            myRef.child(databaseListName).child("added " + getCurrentDate()).setValue(addedAmount);
+                            AlertDialog.Builder theBuild = new AlertDialog.Builder(feedActivity.this);
+                            theBuild.setMessage(addedAmount+" "+ addedItem+" "+ "eklendi");
+                            theBuild.show();
+
+                            Intent intent = new Intent(getApplicationContext(), feedActivity.class);
+                            startActivity(intent);
+                        }
+
+                    }
+                    else if(text.contains("sil")){
+
+
+                        FirebaseUser user = mAuth.getCurrentUser();
+                        String mail = user.getEmail();
+                        String userEmail = user.getEmail();
+                        String userID = user.getUid();
+                        ListView list = findViewById(R.id.listView);
+
+                        if(text.matches("[a-zA-Z]+")){
+                            String databaseListName = text.substring(0,text.indexOf(" ")) + userID;
+                            String deleted=text.substring(text.lastIndexOf(" ")+1);
+                            String deletedItem=text.substring(0,text.indexOf(" "));
+                            String deletedAmount="1";
+
+                            for (int i = 0; i < hashMapsOfItems.size(); i++) {
+                                if (hashMapsOfItems.get(i).get("item") != null && hashMapsOfItems.get(i).get("item").equals(deletedItem) &&
+                                        hashMapsOfItems.get(i).get("userEmail") != null && hashMapsOfItems.get(i).get("userEmail").equals(userEmail)) {
+                                    int newValue = Integer.parseInt(hashMapsOfItems.get(i).get("amountOfItem")) - Integer.parseInt(deletedAmount);
+                                    if(newValue<0){
+                                        newValue=0;
+                                        deletedAmount=hashMapsOfItems.get(i).get("amountOfItem");
+                                    }
+                                    myRef.child(databaseListName).child("removed " + getCurrentDate()).setValue("" + deletedAmount);
+                                    myRef.child(databaseListName).child("amountOfItem").setValue("" + newValue);
+                                }
+                            }
+
+
+                            AlertDialog.Builder theBuild = new AlertDialog.Builder(feedActivity.this);
+                            theBuild.setMessage(deletedAmount+" "+deletedItem+" "+"silindi");
+                            theBuild.show();
+
+                            Intent intent = new Intent(getApplicationContext(), feedActivity.class);
+                            startActivity(intent);
+                        }
+                        else{
+                            String deleted=text.substring(text.lastIndexOf(" ")+1);
+                            String deletedItem=text.substring(text.indexOf(" ")+1,text.lastIndexOf(" "));
+                            String deletedAmount=text.substring(0,text.indexOf(" "));
+                            String databaseListName = deletedItem + userID;
+
+                            for (int i = 0; i < hashMapsOfItems.size(); i++)
+                                if (hashMapsOfItems.get(i).get("item") != null && hashMapsOfItems.get(i).get("item").equals(deletedItem) &&
+                                        hashMapsOfItems.get(i).get("userEmail") != null && hashMapsOfItems.get(i).get("userEmail").equals(userEmail)) {
+                                    int newValue = Integer.parseInt(hashMapsOfItems.get(i).get("amountOfItem")) - Integer.parseInt(deletedAmount);
+                                    if(newValue<0){
+                                        newValue=0;
+                                        deletedAmount=hashMapsOfItems.get(i).get("amountOfItem");
+                                    }
+
+                                    myRef.child(databaseListName).child("removed " + getCurrentDate()).setValue("" + deletedAmount);
+                                    myRef.child(databaseListName).child("amountOfItem").setValue("" + newValue);
+                                }
+
+
+                            AlertDialog.Builder theBuild = new AlertDialog.Builder(feedActivity.this);
+                            theBuild.setMessage(deletedAmount+" "+deletedItem+" "+"silindi");
+                            theBuild.show();
+
+                            Intent intent = new Intent(getApplicationContext(), feedActivity.class);
+                            startActivity(intent);
+
+                        }
+
                     }
                 }
             }
@@ -405,6 +487,8 @@ public class feedActivity extends AppCompatActivity {
                 return false;
             }
         });
+
+
     }
 
     private void checkPermission() {

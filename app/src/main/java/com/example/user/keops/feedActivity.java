@@ -364,7 +364,6 @@ public class feedActivity extends AppCompatActivity {
                         myRef.child(databaseListName).child("item").setValue(text.substring(0,text.indexOf(" ")));
                         myRef.child(databaseListName).child("amountOfItem").setValue(text.substring(text.indexOf(" ")+1));
                         myRef.child(databaseListName).child("added " + getCurrentDate()).setValue(text.substring(text.indexOf(" ")+1));
-                        myRef.child(databaseListName).child("added " + getCurrentDate()).setValue(text.substring(0, text.indexOf(" ")));
                         AlertDialog.Builder theBuild = new AlertDialog.Builder(feedActivity.this);
                         theBuild.setMessage(text + " eklendi");
                         theBuild.show();

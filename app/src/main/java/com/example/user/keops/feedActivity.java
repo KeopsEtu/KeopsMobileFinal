@@ -415,6 +415,15 @@ public class feedActivity extends AppCompatActivity {
         }
     }
 
+    public void read(View view) {
+        for (int i =0;i<hashMapsOfItems.size();i++) {
+            if (hashMapsOfItems.get(i).get("userEmail").equals(mAuth.getCurrentUser().getEmail())) {
+                String str = hashMapsOfItems.get(i).get("item") + " " + hashMapsOfItems.get(i).get("amountOfItem");
+                System.out.println("yalim " + str);
+            }
+         }
+    }
+
     public String getCurrentDate() {
         Date c = Calendar.getInstance().getTime();
         System.out.println("Current time => " + c);

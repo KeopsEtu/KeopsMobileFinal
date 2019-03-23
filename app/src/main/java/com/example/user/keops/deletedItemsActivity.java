@@ -261,7 +261,7 @@ public class deletedItemsActivity extends AppCompatActivity {
                                     temp4 = temp4 + (dates2.get(i).getTime() - dates2.get(i-1).getTime()) / 3600000 / (float)(added.get(i));
                                 }
                                 int temp5 = (int)(temp4/(dates2.size()-1));
-                                if (Integer.parseInt(hashMap.get("amountOfItem"))*temp6>temp5) {
+                                if (Integer.parseInt(hashMap.get("amountOfItem"))*temp6<temp5) {
                                     listItemFromFB.add(hashMap.get("item"));
                                     counts.add(Integer.parseInt(String.valueOf(hashMap.get("amountOfItem"))));
                                 }

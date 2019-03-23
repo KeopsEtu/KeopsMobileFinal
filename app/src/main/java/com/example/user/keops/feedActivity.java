@@ -11,6 +11,7 @@ import android.os.Handler;
 import android.speech.RecognitionListener;
 import android.speech.RecognizerIntent;
 import android.speech.SpeechRecognizer;
+import android.speech.tts.TextToSpeech;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
@@ -59,6 +60,7 @@ public class feedActivity extends AppCompatActivity {
     ArrayList<String> temp;
     ArrayList<Integer> counts;
     private FirebaseAuth mAuth;
+    private TextToSpeech mTTS;
     ArrayList<HashMap<String, String>> hashMapsOfItems = new ArrayList<>();
 
     private ArrayAdapter<String> existingListAdapter;
@@ -500,12 +502,65 @@ public class feedActivity extends AppCompatActivity {
     }
 
     public void read(View view) {
+        final Button reader = findViewById(R.id.button2);
+        mTTS = new TextToSpeech(this, new TextToSpeech.OnInitListener() {
+            @Override
+            public void onInit(int status) {
+                if (status == TextToSpeech.SUCCESS) {
+                    Locale locale = new Locale("tr", "TR");
+
+                    int result = mTTS.setLanguage(locale);
+
+                    if (result == TextToSpeech.LANG_MISSING_DATA
+                            || result == TextToSpeech.LANG_NOT_SUPPORTED) {
+                        Log.e("TTS", "Language not supported");
+                    } else {
+                        reader.setEnabled(true);
+                    }
+                } else {
+                    Log.e("TTS", "Initialization failed");
+                }
+            }
+        });
+
+        reader.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                speak();
+            }
+        });
+
+
+
+    }
+
+    private void speak() {
+        String str = "";
         for (int i =0;i<hashMapsOfItems.size();i++) {
             if (hashMapsOfItems.get(i).get("userEmail").equals(mAuth.getCurrentUser().getEmail())) {
-                String str = hashMapsOfItems.get(i).get("item") + " " + hashMapsOfItems.get(i).get("amountOfItem");
-                System.out.println("yalim " + str);
+                if(Integer.parseInt(hashMapsOfItems.get(i).get("amountOfItem"))==0){
+                    str += hashMapsOfItems.get(i).get("item")+" yok\n" ;
+                }
+                else{
+                    str += hashMapsOfItems.get(i).get("amountOfItem")+" "+hashMapsOfItems.get(i).get("item")+"\n" ;
+                }
+                
             }
          }
+        float speed = 0.7f;
+        mTTS.setSpeechRate(speed);
+        mTTS.speak(str, TextToSpeech.QUEUE_FLUSH, null);
+
+    }
+
+    @Override
+    protected void onDestroy() {
+        if (mTTS != null) {
+            mTTS.stop();
+            mTTS.shutdown();
+        }
+
+        super.onDestroy();
     }
 
     public String getCurrentDate() {

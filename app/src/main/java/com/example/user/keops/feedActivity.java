@@ -359,10 +359,11 @@ public class feedActivity extends AppCompatActivity {
                         theBuild.setMessage(text + " eklendi");
                         theBuild.show();
                     } else {
-                        String databaseListName = text.substring(text.indexOf(" ") + 1).toLowerCase() + user.getUid();
+                        String databaseListName = text.substring(text.indexOf(" ")+1).toLowerCase() + user.getUid();
                         myRef.child(databaseListName).child("userEmail").setValue(mail);
-                        myRef.child(databaseListName).child("item").setValue(text.substring(text.indexOf(" ") + 1));
-                        myRef.child(databaseListName).child("amountOfItem").setValue(text.substring(0, text.indexOf(" ")));
+                        myRef.child(databaseListName).child("item").setValue(text.substring(0,text.indexOf(" ")));
+                        myRef.child(databaseListName).child("amountOfItem").setValue(text.substring(text.indexOf(" ")+1));
+                        myRef.child(databaseListName).child("added " + getCurrentDate()).setValue(text.substring(text.indexOf(" ")+1));
                         myRef.child(databaseListName).child("added " + getCurrentDate()).setValue(text.substring(0, text.indexOf(" ")));
                         AlertDialog.Builder theBuild = new AlertDialog.Builder(feedActivity.this);
                         theBuild.setMessage(text + " eklendi");

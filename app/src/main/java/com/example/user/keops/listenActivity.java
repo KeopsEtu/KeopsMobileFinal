@@ -86,8 +86,13 @@ public class listenActivity extends AppCompatActivity {
         database = FirebaseDatabase.getInstance();
         myRef = database.getReference();
         mAuth = FirebaseAuth.getInstance();
+        listItemFromFB = new ArrayList<>();
+        counts = new ArrayList<>();
+        delete = new ArrayList<>();
+        temp = new ArrayList<>();
 
         checkPermission();
+        getDataFromFirebase();
 
         final EditText editText = findViewById(R.id.editText);
 
@@ -144,6 +149,7 @@ public class listenActivity extends AppCompatActivity {
 
                 if (matches != null) {
                     text=matches.get(0);
+                    text=text.toLowerCase();
                     editText.setText(matches.get(0));
                     addItem.setOnClickListener(new View.OnClickListener() {
                         @Override
@@ -205,22 +211,22 @@ public class listenActivity extends AppCompatActivity {
                     deleteItem.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View view) {
-                            getDataFromFirebase();
+
                             FirebaseUser user = mAuth.getCurrentUser();
                             String mail = user.getEmail();
                             String userEmail = user.getEmail();
                             String userID = user.getUid();
                             ListView list = findViewById(R.id.listView);
-
-
+                            String databaseListName = text.substring(0,text.indexOf(" ")) + userID;
 
                                 for (int i = 0; i < hashMapsOfItems.size(); i++)
-                                    if (hashMapsOfItems.get(i).get("item") != null && hashMapsOfItems.get(i).get("item").equals(text) &&
+                                    if (hashMapsOfItems.get(i).get("item") != null && hashMapsOfItems.get(i).get("item").equals(text.substring(0,text.indexOf(" "))) &&
                                             hashMapsOfItems.get(i).get("userEmail") != null && hashMapsOfItems.get(i).get("userEmail").equals(userEmail)) {
-                                        int newValue = Integer.parseInt(hashMapsOfItems.get(i).get("amountOfItem")) - 1;
+                                        int newValue = Integer.parseInt(hashMapsOfItems.get(i).get("amountOfItem")) - Integer.parseInt(text.substring(text.indexOf(" ")+1));
+                                    
 
-                                        myRef.child(text + userID).child("removed " + getCurrentDate()).setValue("" + 1);
-                                        myRef.child(text + userID).child("amountOfItem").setValue("" + newValue);
+                                        myRef.child(databaseListName).child("removed " + getCurrentDate()).setValue("" + text.substring(text.indexOf(" ")+1));
+                                        myRef.child(databaseListName).child("amountOfItem").setValue("" + newValue);
                                     }
 
 
@@ -337,7 +343,6 @@ public class listenActivity extends AppCompatActivity {
                         }
                     }
                 }
-                adapter.notifyDataSetChanged();
             }
 
             @Override
